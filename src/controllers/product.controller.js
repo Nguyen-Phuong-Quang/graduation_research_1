@@ -35,3 +35,19 @@ exports.updateProductDetail = async (req, res, next) => {
         next(err);
     }
 }
+
+exports.updateProductImages = async (req, res, next) => {
+    try {
+        const { type, message, statusCode } = await productService.updateProductImages(req.params.productId, req.user._id, req.files);
+
+        if (type === 'Error')
+            return next(new CustomErrorHandler(statusCode, message));
+
+        res.status(statusCode).json({
+            type,
+            message
+        })
+    } catch (err) {
+        next(err)
+    }
+}
