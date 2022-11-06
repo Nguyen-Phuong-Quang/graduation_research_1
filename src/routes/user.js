@@ -19,10 +19,10 @@ route.use(authorize);
 route.post('/', restrictedTo('ADMIN'), uploadSingleFile('image'), userController.createUser);
 
 // Update user details
-route.post('/update-user-detail', userController.updateUserDetail);
+route.patch('/update-user-detail', userController.updateUserDetail);
 
 // Update user profile
-route.post('/update-user-profile', uploadSingleFile('image'), userController.updateUserProfile);
+route.patch('/update-user-profile', uploadSingleFile('image'), userController.updateUserProfile);
 
 // Delete user by id
 route.delete('/delete-user/:id', restrictedTo('ADMIN'), userController.deleteUserById)

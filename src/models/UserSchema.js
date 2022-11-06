@@ -60,7 +60,6 @@ const UserSchema = new mongoose.Schema(
     }
 );
 
-// Name and email is unique
 UserSchema.index({ name: 1, email: 1 }, { unique: true });
 
 // Encrypt password using bcrypt
