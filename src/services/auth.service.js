@@ -181,12 +181,12 @@ exports.signin = async (email, password) => {
 }
 
 // Refresh token 
-exports.refreshToken = async (token) => {
+exports.refreshToken = async (refreshToken) => {
     // Check token is expired or not
-    const tokenDoc = await verifyToken(token);
+    const refreshTokenDoc = await verifyToken(refreshToken, tokenTypes.refresh);
 
     // If expired
-    if (!tokenDoc)
+    if (!refreshTokenDoc)
         return {
             type: 'Error',
             message: 'User token not found!',
@@ -194,7 +194,7 @@ exports.refreshToken = async (token) => {
         }
 
     // Find user of token
-    const user = await UserSchema.findById(tokenDoc.userId);
+    const user = await UserSchema.findById(refreshTokenDoc.userId);
 
     // If no user found
     if (!user)
@@ -205,7 +205,7 @@ exports.refreshToken = async (token) => {
         }
 
     // Delete token 
-    await TokenSchema.deleteMany({ token });
+    await TokenSchema.deleteMany({ token: refreshToken });
 
     // Generate new token
     const newToken = await generateAuthToken(user);
@@ -362,7 +362,7 @@ exports.changePassword = async (password, newPassword, confirmPassword, userId) 
 // Sign out
 exports.signout = async (userId) => {
     // Delete all sign in token
-    const deleleResponse = await TokenSchema.deleteOne({ userId });
+    const deleleResponse = await TokenSchema.deleteMany({ userId });
 
     // Check if no token found
     if (deleleResponse.deletedCount === 0)

@@ -62,10 +62,10 @@ exports.signin = async (req, res, next) => {
 }
 
 exports.refreshToken = async (req, res, next) => {
-    const { token } = req.body
+    const { refreshToken } = req.body
     try {
         // Call refresh token service
-        const { type, message, statusCode, newToken } = await authService.refreshToken(token);
+        const { type, message, statusCode, newToken } = await authService.refreshToken(refreshToken);
 
         if (type === 'Error')
             return next(new CustomErrorHandler(statusCode, message));
@@ -73,7 +73,7 @@ exports.refreshToken = async (req, res, next) => {
         res.status(statusCode).json({
             type,
             message,
-            newToken
+            token: newToken
         })
 
     } catch (err) {

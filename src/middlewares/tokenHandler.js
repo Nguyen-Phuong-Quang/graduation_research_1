@@ -6,10 +6,9 @@ const config = require('../config/config');
 const tokenTypes = require('../config/token');
 
 // Genarate token
-const generateToken = (userId, email, expires, type) => {
+const generateToken = (userId, expires, type) => {
     const payload = {
         userId,
-        email,
         iat: moment().unix(),
         exp: expires.unix(),
         type
@@ -17,21 +16,22 @@ const generateToken = (userId, email, expires, type) => {
     return jwt.sign(payload, config.jwt.jwt_secret)
 }
 // Save token
-const saveToken = async (userId, token, expires) => {
+const saveToken = async (userId, token, expires, type) => {
     const newTokenSchema = await TokenSchema.create({
         token,
         userId,
         expires: Date.parse(expires),
+        type
     })
 
     return newTokenSchema;
 }
 
 // Verify token
-exports.verifyToken = async (token) => {
+exports.verifyToken = async (token, type) => {
     const payload = jwt.verify(token, config.jwt.jwt_secret);
 
-    const tokenResponse = await TokenSchema.findOne({ token, userId: payload.userId });
+    const tokenResponse = await TokenSchema.findOne({ token, userId: payload.userId, type });
 
     if (!tokenResponse)
         return {
@@ -46,16 +46,26 @@ exports.verifyToken = async (token) => {
 // Generate auth token
 exports.generateAuthToken = async (user) => {
 
+    const accessTokenExpires = moment().add(
+        config.jwt.jwt_access_expiration_minutes,
+        'minutes'
+    )
+
+    const accessToken = generateToken(user._id, accessTokenExpires, tokenTypes.access);
+
     const refreshTokenExpires = moment().add(
         config.jwt.jwt_refresh_expiration_days,
         'days'
     )
 
-    const token = generateToken(user._id, user.email, refreshTokenExpires, tokenTypes.refresh);
-    
-    await saveToken(user._id, token, refreshTokenExpires);
+    const refreshToken = generateToken(user._id, refreshTokenExpires, tokenTypes.refresh);
 
-    return token;
+    await saveToken(user._id, refreshToken, refreshTokenExpires, tokenTypes.refresh);
+
+    return {
+        accessToken,
+        refreshToken
+    };
 
 }
 

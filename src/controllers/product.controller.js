@@ -51,3 +51,19 @@ exports.updateProductImages = async (req, res, next) => {
         next(err)
     }
 }
+
+exports.deleteProductById = async (req, res, next) => {
+    try {
+        const { type, message, statusCode } = await productService.deleteProductById(req.params.productId, req.user._id);
+
+        if (type === 'Error')
+            return next(new CustomErrorHandler(statusCode, message));
+
+        res.status(statusCode).json({
+            type,
+            message
+        })
+    } catch (err) {
+        next(err);
+    }
+}

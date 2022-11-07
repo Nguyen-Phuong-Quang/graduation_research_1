@@ -137,7 +137,7 @@ exports.updateProductImages = async (productId, sellerId, images) => {
 
     if (otherImages.length > 0) {
         product.imagesId.forEach(image => destroyFileCloudinary(image))
-        
+
         const imagesPromises = otherImages.map(image => uploadFileCloudinary(image.buffer, folderName));
         const imagesResult = await Promise.all(imagesPromises);
 
@@ -165,4 +165,30 @@ exports.updateProductImages = async (productId, sellerId, images) => {
         message: 'Update image successfully!',
         statusCode: 200
     };
+}
+
+exports.deleteProductById = async (productId, sellerId) => {
+    const product = await ProductSchema.findById(productId);
+
+    if(!product)
+        return {
+            type: 'Error',
+            message: 'No product found!',
+            statusCode: 404
+        }
+
+    if(sellerId.toString() !== product.seller.toString())
+        return {
+            type: 'Error',
+            message: 'This is not your product!',
+            statusCode: 403
+        }
+
+    await ProductSchema.findByIdAndDelete(productId);
+
+    return {
+        type: 'Success',
+        message: 'Delete product successfully!',
+        statusCode: 200
+    }
 }
