@@ -12,11 +12,6 @@ module.exports = async (req, res, next) => {
         if (!token)
             return next(new CustomErrorHandler(401, 'Please login!'));
 
-        const tokenDoc = await TokenSchema.findOne({ token });
-
-        if(!tokenDoc) 
-            return next(new CustomErrorHandler(404, 'No token found!'))
-
         const decoded = jwt.verify(token, config.jwt.jwt_secret);
 
         const user = await UserSchema.findById(decoded.userId).select('role');

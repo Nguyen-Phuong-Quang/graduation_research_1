@@ -1,6 +1,40 @@
 const productService = require('../services/product.service');
 const CustomErrorHandler = require('../utils/CustomErrorHandler');
 
+exports.getProductById = async (req, res, next) => {
+    try {
+        const { type, message, statusCode, product } = await productService.getProductById(req.params.productId);
+
+        if (type === 'Error')
+            return next(new CustomErrorHandler(statusCode, message));
+
+        res.status(statusCode).json({
+            type,
+            message,
+            product
+        })
+    } catch (err) {
+        next(err)
+    }
+}
+
+exports.getAllProducts = async (req, res, next) => {
+    try {
+        const { type, message, statusCode, products } = await productService.getAllProductsByQuery(req);
+
+        if (type === 'Error')
+            return next(new CustomErrorHandler(statusCode, message));
+
+        res.status(statusCode).json({
+            type,
+            message,
+            products
+        })
+    } catch (err) {
+        next(err);
+    }
+}
+
 exports.addProduct = async (req, res, next) => {
     const { body, files, user } = req;
     try {
@@ -63,6 +97,55 @@ exports.deleteProductById = async (req, res, next) => {
             type,
             message
         })
+    } catch (err) {
+        next(err);
+    }
+}
+
+exports.addColor = async (req, res, next) => {
+    try {
+        const { type, message, statusCode, color } = await productService.addColor(req.params.productId, req.user._id, req.body.color);
+
+        if (type === 'Error')
+            return next(new CustomErrorHandler(statusCode, message));
+
+        res.status(statusCode).json({
+            type,
+            message,
+            color
+        })
+    } catch (err) {
+        next(err);
+    }
+}
+
+exports.deleteColor = async (req, res, next) => {
+    try {
+        const { type, message, statusCode } = await productService.deleteColor(req.params.productId, req.user._id, req.body.color);
+
+        if (type === 'Error')
+            return next(new CustomErrorHandler(statusCode, message));
+
+        res.status(statusCode).json({
+            type,
+            message
+        })
+    } catch (err) {
+        next(err);
+    }
+}
+
+exports.addSize = async (req, res, next) => {
+    try {
+
+    } catch (err) {
+        next(err);
+    }
+}
+
+exports.deleteSize = async (req, res, next) => {
+    try {
+
     } catch (err) {
         next(err);
     }

@@ -6,18 +6,21 @@ const apiFeatures = async (req, Model, populate) => {
     // Copy req.query
     const reqQuery = { ...req.query };
 
+    // Regex field
+    const regexField = ['name', 'email', 'address', 'companyName', 'phone', 'slug'];
+
+    regexField.forEach(field => {
+        reqQuery[field] = new RegExp(reqQuery[field], 'i');
+    })
+
     // Fields to exclude
     const removeQueryFields = ['sort', 'limit', 'page', 'select', 'filter'];
 
     // Loop over removeFields and delete them from reqQuery
     removeQueryFields.forEach(field => delete reqQuery[field]);
 
-    // Create operators ($gt, $gte, etc) and handle create operators ($gt, $gte, etc)
-    const queryStr = JSON.stringify(reqQuery).replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`);
-
     // Find resources
-    query = Model.find(JSON.parse(queryStr));
-
+    query = Model.find(reqQuery);
 
     // Select fields
     const fieldsSelect = '-password' + ' ' + (req.query.select ? req.query.select.split(',').join(' ') : '');

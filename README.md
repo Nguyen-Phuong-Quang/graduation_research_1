@@ -63,18 +63,18 @@
   * Update Review Using It's ID [User]
   * Delete Review Using It's ID [User] -->
 * Product Services
-  <!-- * Query products [Public]
-  * Query Product Using It's ID [Public] -->
+  * Query products [Public]
+  * Query Product Using It's ID [Public]
   * Create new product [Seller]
   * Update Product Details [Seller]
   * Update Product Images [Seller]
   * Delete Product Using It's ID [User]
-  <!-- * Get Products Statics [Admin]
-  * Top 5 Cheapeast Products [Public]
+  <!-- * Get Products Statics [Admin] -->
+  <!-- * Top 5 Cheapeast Products [Public] -->
   * Add Product Color [Seller]
-  * Add Product Size [Seller]
   * Delete Product Color [Seller]
-  * Delete Product Size [Seller] -->
+  <!-- * Add Product Size [Seller] -->
+  <!-- * Delete Product Size [Seller] -->
 <!-- * Favorite Services
   * Get Favorite Products List [User]
   * Add Product to Favorite List [User]

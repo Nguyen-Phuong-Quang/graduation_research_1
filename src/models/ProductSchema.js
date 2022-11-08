@@ -46,12 +46,14 @@ const ProductSchema = new mongoose.Schema(
         },
         colors: [
             {
-                type: String
+                type: mongoose.Types.ObjectId,
+                ref: 'Color'
             }
         ],
         sizes: [
             {
-                type: String
+                type: mongoose.Types.ObjectId,
+                ref: 'Size'
             }
         ],
         quantity: {

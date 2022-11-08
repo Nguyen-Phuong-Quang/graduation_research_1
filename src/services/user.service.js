@@ -24,6 +24,7 @@ exports.getUserById = async (id) => {
 }
 
 exports.findByQueryUsers = async (req) => {
+
     const users = await apiFeatures(req, UserSchema);
 
     // If no user found
