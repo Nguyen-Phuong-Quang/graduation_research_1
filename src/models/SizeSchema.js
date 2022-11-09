@@ -21,4 +21,8 @@ const SizeSchema = new mongoose.Schema(
 
 SizeSchema.index({ size: 1 }, { unique: true });
 
+SizeSchema.statics.isExisted = async function (productId, size) {
+    return (await this.findOne({ product: { $in: productId }, size }));
+}
+
 module.exports = mongoose.model('Size', SizeSchema, 'sizes');

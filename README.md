@@ -73,8 +73,8 @@
   <!-- * Top 5 Cheapeast Products [Public] -->
   * Add Product Color [Seller]
   * Delete Product Color [Seller]
-  <!-- * Add Product Size [Seller] -->
-  <!-- * Delete Product Size [Seller] -->
+  * Add Product Size [Seller]
+  * Delete Product Size [Seller]
 <!-- * Favorite Services
   * Get Favorite Products List [User]
   * Add Product to Favorite List [User]

@@ -137,7 +137,16 @@ exports.deleteColor = async (req, res, next) => {
 
 exports.addSize = async (req, res, next) => {
     try {
+        const { type, message, statusCode, size } = await productService.addSize(req.params.productId, req.user._id, req.body.size);
 
+        if (type === 'Error')
+            return next(new CustomErrorHandler(statusCode, message));
+
+        res.status(statusCode).json({
+            type,
+            message,
+            size
+        })
     } catch (err) {
         next(err);
     }
@@ -145,7 +154,15 @@ exports.addSize = async (req, res, next) => {
 
 exports.deleteSize = async (req, res, next) => {
     try {
+        const { type, message, statusCode } = await productService.deleteSize(req.params.productId, req.user._id, req.body.size);
 
+        if (type === 'Error')
+            return next(new CustomErrorHandler(statusCode, message));
+
+        res.status(statusCode).json({
+            type,
+            message
+        })
     } catch (err) {
         next(err);
     }

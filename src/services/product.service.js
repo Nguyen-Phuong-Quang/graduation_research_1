@@ -378,10 +378,78 @@ exports.deleteColor = async (productId, seller, color) => {
     };
 }
 
-exports.addSize = async (req, res, next) => {
+exports.addSize = async (productId, seller, size) => {
+    const product = await ProductSchema.findById(productId);
 
+    if (!product)
+        return {
+            type: 'Error',
+            message: 'No product found!',
+            statusCode: 404
+        }
+
+    if (seller.toString() !== product.seller.toString())
+        return {
+            type: 'Error',
+            message: 'This is not your product!',
+            statusCode: 403
+        }
+
+    if (await SizeSchema.isExisted(productId, size.toLowerCase()))
+        return {
+            type: 'Error',
+            message: 'Size exists!',
+            statusCode: 401
+        }
+
+    const newSize = await SizeSchema.create({ product: productId, size });
+
+    product.sizes.push(newSize._id);
+
+    await product.save();
+
+    return {
+        type: 'Success',
+        message: 'Add size successfully!',
+        statusCode: 200,
+        size: newSize
+    }
 }
 
-exports.deleteSize = async (req, res, next) => {
+exports.deleteSize = async (productId, seller, size) => {
+    const product = await ProductSchema.findById(productId);
 
+    if (!product)
+        return {
+            type: 'Error',
+            message: 'No product found!',
+            statusCode: 404
+        }
+
+    if (seller.toString() !== product.seller.toString())
+        return {
+            type: 'Error',
+            message: 'This is not your product!',
+            statusCode: 403
+        }
+
+    const sizeDoc = await SizeSchema.isExisted(productId, size);
+    if (!sizeDoc)
+        return {
+            type: 'Error',
+            message: 'No size found!',
+            statusCode: 404
+        }
+
+    product.sizes = product.sizes.filter(sizeId => sizeId.toString() !== sizeDoc._id.toString());
+
+    await SizeSchema.updateOne({ size }, { $pull: { product: product._id } });
+
+    await product.save();
+
+    return {
+        type: 'Success',
+        message: 'Delete cosizelor successfully!',
+        statusCode: 200
+    };
 }
