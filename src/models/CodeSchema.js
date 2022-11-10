@@ -3,7 +3,6 @@ const config = require('../config/config');
 const generateCode = require('../utils/generateCode');
 const { sendVerifyMail, sendResetPassword } = require('../utils/mail');
 const validator = require('validator');
-const bcrypt = require('bcrypt');
 const tokenTypes = require('../config/token');
 
 const CodeSchema = new mongoose.Schema({

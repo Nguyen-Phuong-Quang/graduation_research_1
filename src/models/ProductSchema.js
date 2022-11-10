@@ -96,4 +96,12 @@ ProductSchema.pre('save', function (next) {
     next();
 })
 
+ProductSchema.pre(/^find/, function (next) {
+    this.populate([
+        { path: 'colors', select: 'color' },
+        { path: 'sizes', select: 'size' }
+    ]);
+    next();
+})
+
 module.exports = mongoose.model('Product', ProductSchema, 'products');

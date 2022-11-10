@@ -5,12 +5,7 @@ const { uploadFileCloudinary, destroyFileCloudinary } = require("../utils/cloudi
 const apiFeatures = require('../utils/apiFeatures');
 
 exports.getProductById = async (productId) => {
-    const populateQuery = [
-        { path: 'colors', select: 'color' },
-        { path: 'sizes', select: 'size' }
-    ];
-
-    const product = await ProductSchema.findById(productId).populate(populateQuery).lean();
+    const product = await ProductSchema.findById(productId).lean();
 
     if (!product)
         return {
@@ -28,10 +23,6 @@ exports.getProductById = async (productId) => {
 }
 
 exports.getAllProductsByQuery = async (req) => {
-    const populateQuery = [
-        { path: 'colors', select: 'color' },
-        { path: 'sizes', select: 'size' }
-    ];
 
     const { limit, min, max } = req.query;
 
@@ -46,7 +37,7 @@ exports.getAllProductsByQuery = async (req) => {
         req.query.price = priceSearch
     }
 
-    const products = await apiFeatures(req, ProductSchema, populateQuery);
+    const products = await apiFeatures(req, ProductSchema);
 
     if (products.length < 1)
         return {
