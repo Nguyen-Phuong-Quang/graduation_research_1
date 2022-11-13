@@ -2,7 +2,6 @@ const UserSchema = require("../models/UserSchema");
 const CustomErrorHandler = require("../utils/CustomErrorHandler");
 const jwt = require('jsonwebtoken');
 const config = require("../config/config");
-const TokenSchema = require("../models/TokenSchema");
 
 module.exports = async (req, res, next) => {
     try {

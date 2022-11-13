@@ -87,7 +87,7 @@ exports.addItemToCart = async (email, productId, quantity, color, size) => {
     }
 
     await cart.save();
-
+     
     return {
         type: 'Success',
         message: 'Add item to cart successfully!',
