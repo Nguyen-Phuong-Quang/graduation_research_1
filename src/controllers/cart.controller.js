@@ -18,3 +18,36 @@ exports.addItemToCart = async (req, res, next) => {
         next(err)
     }
 }
+
+exports.getCart = async (req, res, next) => {
+    try {
+        const { type, message, statusCode, cart } = await cartService.getCart(req.user.email);
+
+        if (type === 'Error')
+            return next(new CustomErrorHandler(statusCode, message));
+
+        res.status(statusCode).json({
+            type,
+            message,
+            cart
+        })
+    } catch (err) {
+        next(err);
+    }
+}
+
+exports.deleteCart = async (req, res, next) => {
+    try {
+        const { type, message, statusCode } = await cartService.deleteCart(req.user.email);
+
+        if (type === 'Error')
+            return next(new CustomErrorHandler(statusCode, message));
+
+        res.status(statusCode).json({
+            type,
+            message
+        })
+    } catch (err) {
+        next(err);
+    }
+}

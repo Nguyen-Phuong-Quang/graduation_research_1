@@ -87,11 +87,46 @@ exports.addItemToCart = async (email, productId, quantity, color, size) => {
     }
 
     await cart.save();
-     
+
     return {
         type: 'Success',
         message: 'Add item to cart successfully!',
         statusCode: 200,
         cart
+    }
+}
+
+exports.getCart = async (email) => {
+    const cart = await CartSchema.findOne({ email });
+
+    if (!cart)
+        return {
+            type: 'Error',
+            message: 'No cart found!',
+            statusCode: 404
+        }
+
+    return {
+        type: 'Success',
+        message: 'Cart found!',
+        statusCode: 200,
+        cart
+    }
+}
+
+exports.deleteCart = async (email) => {
+    const { deletedCount } = await CartSchema.deleteOne({ email });
+
+    if (deletedCount === 0)
+        return {
+            type: 'Error',
+            message: 'No cart found!',
+            statusCode: 404
+        }
+
+    return {
+        type: 'Error',
+        message: 'Delete cart successfully!',
+        statusCode: 200
     }
 }

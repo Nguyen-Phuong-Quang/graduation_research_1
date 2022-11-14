@@ -49,19 +49,19 @@
   * Update User Details Using It's ID [User]
   * Update User Profile Image Using It's ID [User]
   * Delete User Using It's ID [Admin]
-<!-- * Cart Services
+* Cart Services
   * Add Product To Cart [User]
-  * Reduce Product Quantity By One [User]
-  * Increase Product Quantity By One [User]
+  <!-- * Reduce Product Quantity By One [User] -->
+  <!-- * Increase Product Quantity By One [User] -->
   * Get Cart [User]
-  * Delete Cart Item [User]
+  <!-- * Delete Cart Item [User] -->
   * Delete Cart [User]
 * Review Services
-  * Create New Review [User]
-  * Query All Reviews [Public]
-  * Query Review Using It's ID [Public]
-  * Update Review Using It's ID [User]
-  * Delete Review Using It's ID [User] -->
+  <!-- * Create New Review [User] -->
+  <!-- * Query All Reviews [Public] -->
+  <!-- * Query Review Using It's ID [Public] -->
+  <!-- * Update Review Using It's ID [User] -->
+  <!-- * Delete Review Using It's ID [User] -->
 * Product Services
   * Query products [Public]
   * Query Product Using It's ID [Public]
@@ -112,7 +112,6 @@ List of any major frameworks used to build the project.
 * [Cloudinary](https://cloudinary.com/) - Cloud-based service
 * [Compression](https://www.npmjs.com/package/compression) - NodeJS compression middleware
 * [Cors](https://www.npmjs.com/package/cors) - NodeJS package for providing a Connect/Express middleware that can be used to enable CORS with various options
-<!-- * [Express Mongo Sanitize](https://www.npmjs.com/package/express-mongo-sanitize) - Express 4.x middleware which sanitizes user-supplied data to prevent MongoDB Operator Injection. -->
 * [Slugify](https://www.npmjs.com/package/slugify) - Slugifies a string
 * [Dotenv](https://www.npmjs.com/package/dotenv) - Loads environment variables from a . env file into process. env
 * [Helmet](https://www.npmjs.com/package/helmet) - Secure Express apps by setting various HTTP headers
@@ -128,6 +127,8 @@ List of any major frameworks used to build the project.
 You can fork the app or you can git-clone the app into your local machine. Once done that, please install all the
 dependencies by running
 ```
-$ yarn install
+$ yarn install 
+$ npm install
 set your env variables
 $ yarn run start
+$npm start
