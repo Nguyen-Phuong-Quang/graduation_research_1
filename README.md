@@ -54,7 +54,7 @@
   <!-- * Reduce Product Quantity By One [User] -->
   <!-- * Increase Product Quantity By One [User] -->
   * Get Cart [User]
-  <!-- * Delete Cart Item [User] -->
+  * Delete Cart Item [User]
   * Delete Cart [User]
 * Review Services
   <!-- * Create New Review [User] -->
