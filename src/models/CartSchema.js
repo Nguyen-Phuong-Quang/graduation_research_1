@@ -48,7 +48,7 @@ const CartSchema = new mongoose.Schema({
 
 }, { timestamps: true });
 
-CartSchema.index({ email: 1 }, { unique: true });
+CartSchema.index({ email: 1 }, { unique: 1 });
 
 CartSchema.pre('save', function (next) {
     this.populate([
@@ -94,5 +94,8 @@ CartSchema.pre('save', function (next) {
 
     next();
 })
+
+
+
 
 module.exports = mongoose.model('Cart', CartSchema, 'carts');

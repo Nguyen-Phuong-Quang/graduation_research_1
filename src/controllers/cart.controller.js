@@ -51,3 +51,25 @@ exports.deleteCart = async (req, res, next) => {
         next(err);
     }
 }
+
+exports.deleteItem = async (req, res, next) => {
+    try {
+        const { type, message, statusCode, cart } = await cartService.deleteItem(
+            req.user.email,
+            req.params.productId,
+            req.body.color,
+            req.body.size
+        )
+
+        if (type === 'Error')
+            return next(new CustomErrorHandler(statusCode, message));
+
+        res.status(statusCode).json({
+            type,
+            message,
+            cart
+        })
+    } catch (err) {
+        next(err);
+    }
+}

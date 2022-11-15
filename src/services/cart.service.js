@@ -1,4 +1,6 @@
 const CartSchema = require('../models/CartSchema');
+const ColorSchema = require('../models/ColorSchema');
+const SizeSchema = require('../models/SizeSchema');
 const ProductSchema = require('../models/ProductSchema');
 
 exports.addItemToCart = async (email, productId, quantity, color, size) => {
@@ -128,5 +130,67 @@ exports.deleteCart = async (email) => {
         type: 'Error',
         message: 'Delete cart successfully!',
         statusCode: 200
+    }
+}
+
+exports.deleteItem = async (email, productId, color, size) => {
+    const cart = await CartSchema.findOne({ email });
+
+    if (!cart)
+        return {
+            type: 'Error',
+            message: 'No cart found!',
+            statusCode: 404
+        }
+
+    const colorDoc = await ColorSchema.isExisted(productId, color);
+
+    if (!colorDoc)
+        return {
+            type: 'Error',
+            message: 'This color does not exist!',
+            statusCode: 404
+        }
+
+    const sizeDoc = await SizeSchema.isExisted(productId, size);
+
+    if (!sizeDoc)
+        return {
+            type: 'Error',
+            message: 'This size does not exist!',
+            statusCode: 404
+        }
+
+    const product = cart.items.find((item) => {
+        return item.product._id.toString() === productId.toString()
+            && item.color.color.toString() === color.toString()
+            && item.size.size.toString() === size.toString();
+    })
+
+    if (!product)
+        return {
+            type: 'Error',
+            message: 'This product does not exist in your cart!',
+            statusCode: 404
+        }
+
+
+    const newCart = await cart.updateOne({
+        $pull: {
+            items: {
+                product: productId,
+                color: colorDoc._id,
+                size: sizeDoc._id
+            }
+        },
+        totalQuantity: cart.totalQuantity - product.totalProductQuantity,
+        totalPrice: cart.totalPrice - product.totalProductPrice
+    });
+
+    return {
+        type: 'Success',
+        message: 'Remove item successfully!',
+        statusCode: 200,
+        cart: newCart
     }
 }

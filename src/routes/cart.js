@@ -6,6 +6,8 @@ const route = express.Router();
 
 route.use(authorize);
 
+route.delete('/delete-item/:productId', cartController.deleteItem)
+
 route.delete('/delete', cartController.deleteCart)
 
 route.post('/add', cartController.addItemToCart);
