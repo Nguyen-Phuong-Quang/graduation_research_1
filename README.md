@@ -51,8 +51,8 @@
   * Delete User Using It's ID [Admin]
 * Cart Services
   * Add Product To Cart [User]
-  <!-- * Reduce Product Quantity By One [User] -->
-  <!-- * Increase Product Quantity By One [User] -->
+  * Decrease Product Quantity By One [User]
+  * Increase Product Quantity By One [User]
   * Get Cart [User]
   * Delete Cart Item [User]
   * Delete Cart [User]

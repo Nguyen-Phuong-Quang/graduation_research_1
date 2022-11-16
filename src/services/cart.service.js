@@ -194,3 +194,138 @@ exports.deleteItem = async (email, productId, color, size) => {
         cart: newCart
     }
 }
+
+exports.increaseOne = async (email, productId, color, size) => {
+    const cart = await CartSchema.findOne({ email });
+
+    if (!cart)
+        return {
+            type: 'Error',
+            message: 'No cart found for user!',
+            statusCode: 404
+        }
+
+    const product = await ProductSchema.findById(productId);
+
+    if (!product)
+        return {
+            type: 'Error',
+            message: 'No found found!',
+            statusCode: 404
+        }
+
+    const colorDoc = await ColorSchema.isExisted(productId, color);
+
+    if (!colorDoc)
+        return {
+            type: 'Error',
+            message: 'This color does not exist!',
+            statusCode: 404
+        }
+
+    const sizeDoc = await SizeSchema.isExisted(productId, size);
+
+    if (!sizeDoc)
+        return {
+            type: 'Error',
+            message: 'This size does not exist!',
+            statusCode: 404
+        }
+
+    const indexProductExistedInCart = cart.items.findIndex((item) => {
+        return item.product._id.toString() === productId.toString()
+            && item.color.color.toString() === color.toString()
+            && item.size.size.toString() === size.toString();
+    })
+
+    if (indexProductExistedInCart !== -1) {
+        cart.items[indexProductExistedInCart].totalProductQuantity += 1;
+        cart.items[indexProductExistedInCart].totalProductPrice += product.price;
+        await cart.save();
+
+        return {
+            type: 'Success',
+            message: `Increate item ${product.name} by one successfully!`,
+            statusCode: 200,
+            cart
+        }
+    }
+
+    return {
+        type: 'Error',
+        message: `No item found in cart!`,
+        statusCode: 404
+    }
+}
+
+exports.decreaseOne = async (email, productId, color, size) => {
+    const cart = await CartSchema.findOne({ email });
+
+    if (!cart)
+        return {
+            type: 'Error',
+            message: 'No cart found for user!',
+            statusCode: 404
+        }
+
+    const product = await ProductSchema.findById(productId);
+
+    if (!product)
+        return {
+            type: 'Error',
+            message: 'No found found!',
+            statusCode: 404
+        }
+
+    const colorDoc = await ColorSchema.isExisted(productId, color);
+
+    if (!colorDoc)
+        return {
+            type: 'Error',
+            message: 'This color does not exist!',
+            statusCode: 404
+        }
+
+    const sizeDoc = await SizeSchema.isExisted(productId, size);
+
+    if (!sizeDoc)
+        return {
+            type: 'Error',
+            message: 'This size does not exist!',
+            statusCode: 404
+        }
+
+    const indexProductExistedInCart = cart.items.findIndex((item) => {
+        return item.product._id.toString() === productId.toString()
+            && item.color.color.toString() === color.toString()
+            && item.size.size.toString() === size.toString();
+    })
+
+    if (indexProductExistedInCart !== -1) {
+        const updateTotalProductQuantity = cart.items[indexProductExistedInCart].totalProductQuantity - 1;
+        const updatetotalProductPrice = cart.items[indexProductExistedInCart].totalProductPrice - product.price;
+
+        if (updateTotalProductQuantity <= 0 || updatetotalProductPrice <= 0) {
+            cart.items.splice(indexProductExistedInCart, 1);
+        } else {
+            cart.items[indexProductExistedInCart].totalProductQuantity = updateTotalProductQuantity;
+            cart.items[indexProductExistedInCart].totalProductPrice = updatetotalProductPrice;
+        }
+        
+        await cart.save();
+
+        return {
+            type: 'Success',
+            message: `Decrease item ${product.name} by one successfully!`,
+            statusCode: 200,
+            cart
+        }
+    }
+
+
+    return {
+        type: 'Error',
+        message: `No item found in cart!`,
+        statusCode: 404
+    }
+}

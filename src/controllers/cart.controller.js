@@ -73,3 +73,49 @@ exports.deleteItem = async (req, res, next) => {
         next(err);
     }
 }
+
+exports.increaseOne = async (req, res, next) => {
+    const { productId, color, size } = req.body
+    try {
+        const { type, statusCode, message, cart } = await cartService.increaseOne(
+            req.user.email,
+            productId,
+            color,
+            size
+        )
+
+        if (type === 'Error')
+            return next(new CustomErrorHandler(statusCode, message));
+
+        res.status(statusCode).json({
+            type,
+            message,
+            cart
+        })
+    } catch (err) {
+        next(err)
+    }
+}
+
+exports.decreaseOne = async (req, res, next) => {
+    const { productId, color, size } = req.body
+    try {
+        const { type, statusCode, message, cart } = await cartService.decreaseOne(
+            req.user.email,
+            productId,
+            color,
+            size
+        )
+
+        if (type === 'Error')
+            return next(new CustomErrorHandler(statusCode, message));
+
+        res.status(statusCode).json({
+            type,
+            message,
+            cart
+        })
+    } catch (err) {
+        next(err)
+    }
+}
