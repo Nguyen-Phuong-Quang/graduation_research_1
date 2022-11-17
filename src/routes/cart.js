@@ -2,20 +2,20 @@ const express = require('express');
 const authorize = require('../middlewares/authorize');
 const cartController = require('../controllers/cart.controller');
 
-const route = express.Router();
+const router = express.Router();
 
-route.use(authorize);
+router.use(authorize);
 
-route.delete('/delete-item/:productId', cartController.deleteItem)
+router.delete('/delete-item/:productId', cartController.deleteItem)
 
-route.delete('/delete', cartController.deleteCart)
+router.delete('/delete', cartController.deleteCart)
 
-route.patch('/increase-one', cartController.increaseOne);
+router.patch('/increase-one', cartController.increaseOne);
 
-route.patch('/decrease-one', cartController.decreaseOne);
+router.patch('/decrease-one', cartController.decreaseOne);
 
-route.post('/add', cartController.addItemToCart);
+router.post('/add', cartController.addItemToCart);
 
-route.get('/', cartController.getCart);
+router.get('/', cartController.getCart);
 
-module.exports = route; 
+module.exports = router; 

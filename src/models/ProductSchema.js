@@ -1,5 +1,4 @@
 const slugify = require('slugify');
-
 const mongoose = require('mongoose');
 
 const ProductSchema = new mongoose.Schema(
@@ -10,8 +9,8 @@ const ProductSchema = new mongoose.Schema(
             trim: true
         },
         category: {
-            type: String,
-            required: true
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Category'
         },
         slug: {
             type: String

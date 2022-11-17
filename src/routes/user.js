@@ -1,29 +1,30 @@
 const express = require('express');
-const route = express.Router();
 
 const userController = require('../controllers/user.controller');
 const authorize = require('../middlewares/authorize');
 const restrictedTo = require('../middlewares/restrictedTo');
 const { uploadSingleFile } = require('../utils/multer');
+const router = express.Router();
 
 // Get user by id
-route.get('/:id', userController.getUser);
+router.get('/:id', userController.getUser);
 
 // Get users by query
-route.get('/', userController.getUsers);
+router.get('/', userController.getUsers);
 
 // Authorize
-route.use(authorize);
+router.use(authorize);
 
 // Create user with admin role
-route.post('/', restrictedTo('ADMIN'), uploadSingleFile('image'), userController.createUser);
+router.post('/', restrictedTo('ADMIN'), uploadSingleFile('image'), userController.createUser);
 
 // Update user details
-route.patch('/update-user-detail', userController.updateUserDetail);
+router.patch('/update-user-detail', userController.updateUserDetail);
 
 // Update user profile
-route.patch('/update-user-profile', uploadSingleFile('image'), userController.updateUserProfile);
+router.patch('/update-user-profile', uploadSingleFile('image'), userController.updateUserProfile);
 
 // Delete user by id
-route.delete('/delete-user/:id', restrictedTo('ADMIN'), userController.deleteUserById)
-module.exports = route;
+router.delete('/delete-user/:id', restrictedTo('ADMIN'), userController.deleteUserById);
+
+module.exports = router;
