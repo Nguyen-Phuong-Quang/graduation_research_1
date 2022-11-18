@@ -1,10 +1,16 @@
-const { generateAuthToken, verifyToken } = require("../middlewares/tokenHandler");
+const {
+    generateAuthToken,
+    verifyToken,
+} = require("../middlewares/tokenHandler");
 const UserSchema = require("../models/UserSchema");
-const CodeSchema = require('../models/CodeSchema');
+const CodeSchema = require("../models/CodeSchema");
 const TokenSchema = require("../models/TokenSchema");
-const { uploadFileCloudinary, destroyFileCloudinary } = require("../utils/cloudinary");
+const {
+    uploadFileCloudinary,
+    destroyFileCloudinary,
+} = require("../utils/cloudinary");
 const tokenTypes = require("../config/token");
-const bcrypt = require('bcrypt');
+const bcrypt = require("bcrypt");
 
 // Sign up
 exports.signup = async (body, image) => {
@@ -14,47 +20,51 @@ exports.signup = async (body, image) => {
     // Check image required
     if (!image)
         return {
-            tpye: 'Error',
-            message: 'Profile image required!',
-            statusCode: 400
-        }
+            tpye: "Error",
+            message: "Profile image required!",
+            statusCode: 400,
+        };
 
     //Check fields
-    if (!address) address = '';
-    if (!companyName) companyName = '';
-    if (!phone) phone = '';
+    if (!address) address = "";
+    if (!companyName) companyName = "";
+    if (!phone) phone = "";
 
     if (!name || !email || !password || !role)
         return {
-            type: 'Error',
-            message: 'Missing fields',
-            statusCode: 400
-        }
+            type: "Error",
+            message: "Missing fields",
+            statusCode: 400,
+        };
 
     // Check email existed
     const isExistedEmail = await UserSchema.isExistedEmail(email);
 
     if (isExistedEmail)
         return {
-            type: 'Error',
-            message: 'Email is existed!',
-            statusCode: 409
+            type: "Error",
+            message: "Email is existed!",
+            statusCode: 409,
         };
 
-    if (body.adminKey === 'SECRET_ADMIN_KEY') { }
+    if (body.adminKey === "SECRET_ADMIN_KEY") {
+    }
     // Admin forbidden
-    else if (role === 'ADMIN')
+    else if (role === "ADMIN")
         return {
-            type: 'Error',
-            message: 'Cannot create admin!',
-            statusCode: 400
-        }
+            type: "Error",
+            message: "Cannot create admin!",
+            statusCode: 400,
+        };
 
     // Set up folder where image going to be uploaded in cloudinary
-    const folderName = `Users/${name.trim().split(' ').join('-')}`;
+    const folderName = `Users/${name.trim().split(" ").join("-")}`;
 
     // Upload file to cloudinary
-    const imageUploadResponse = await uploadFileCloudinary(image.buffer, folderName);
+    const imageUploadResponse = await uploadFileCloudinary(
+        image.buffer,
+        folderName
+    );
 
     // Create a code for verifying create account service
     const { code } = await CodeSchema.create({
@@ -67,16 +77,16 @@ exports.signup = async (body, image) => {
         phone,
         profileImage: imageUploadResponse.secure_url,
         profileImageId: imageUploadResponse.public_id,
-        type: tokenTypes.verifyEmail
+        type: tokenTypes.verifyEmail,
     });
 
     return {
-        type: 'Success',
+        type: "Success",
         statusCode: 201,
-        message: 'Sign up successfully!',
-        verifyEmailCode: code
-    }
-}
+        message: "Sign up successfully!",
+        verifyEmailCode: code,
+    };
+};
 
 // Verify email
 exports.verifyEmail = async (verifyCode, email) => {
@@ -86,27 +96,27 @@ exports.verifyEmail = async (verifyCode, email) => {
     // If no code exist in db (can have many codes because user can request to resend verify code)
     if (users.length === 0)
         return {
-            type: 'Error',
-            message: 'Code is expired!',
-            statusCode: 404
-        }
+            type: "Error",
+            message: "Code is expired!",
+            statusCode: 404,
+        };
 
-    // Check if code is correct  
-    const user = users.find(async i => i.code === verifyCode);
+    // Check if code is correct
+    const user = users.find(async (i) => i.code === verifyCode);
 
     // If code is not correct
     if (!user)
         return {
-            type: 'Error',
-            message: 'Incorrect code!',
-            statusCode: 400
-        }
+            type: "Error",
+            message: "Incorrect code!",
+            statusCode: 400,
+        };
 
     // Delete image in cloudinary for the another account creation not accepted
-    users.forEach(async i => {
+    users.forEach(async (i) => {
         if (i.code !== verifyCode)
-            await destroyFileCloudinary(i.profileImageId)
-    })
+            await destroyFileCloudinary(i.profileImageId);
+    });
 
     // Create user
     await UserSchema.create({
@@ -118,30 +128,28 @@ exports.verifyEmail = async (verifyCode, email) => {
         address: user.address,
         phone: user.phone,
         profileImage: user.profileImage,
-        profileImageId: user.profileImageId
-
-    })
-
+        profileImageId: user.profileImageId,
+    });
 
     // Delete verify code
     await CodeSchema.deleteMany({ email });
 
     return {
-        type: 'Success',
-        message: 'Verify email successfully!',
-        statusCode: 201
-    }
-}
+        type: "Success",
+        message: "Verify email successfully!",
+        statusCode: 201,
+    };
+};
 
 // Sign in
 exports.signin = async (email, password) => {
     // Check email or password is not inputted
     if (!email || !password)
         return {
-            type: 'Error',
-            message: 'Email and password required!',
-            statusCode: 400
-        }
+            type: "Error",
+            message: "Email and password required!",
+            statusCode: 400,
+        };
 
     // Check user is existed or not
     const user = await UserSchema.findOne({ email });
@@ -149,12 +157,12 @@ exports.signin = async (email, password) => {
     //If not
     if (!user)
         return {
-            type: 'Error',
-            message: 'Email not found!',
-            statusCode: 404
-        }
+            type: "Error",
+            message: "Email not found!",
+            statusCode: 404,
+        };
 
-    // Delete token schema of previous sign in in db 
+    // Delete token schema of previous sign in in db
     await TokenSchema.deleteMany({ userId: user._id });
 
     // Check password is correct or not
@@ -163,24 +171,23 @@ exports.signin = async (email, password) => {
     // If not
     if (!isMatchPassword)
         return {
-            type: 'Error',
-            message: 'Password is wrong!',
-            statusCode: 400
-        }
+            type: "Error",
+            message: "Password is wrong!",
+            statusCode: 400,
+        };
 
     // Generate token
     const token = await generateAuthToken(user);
 
     return {
-        type: 'Success',
-        message: 'Sign in successfully!',
+        type: "Success",
+        message: "Sign in successfully!",
         statusCode: 200,
-        token
-    }
+        token,
+    };
+};
 
-}
-
-// Refresh token 
+// Refresh token
 exports.refreshToken = async (refreshToken) => {
     // Check token is expired or not
     const refreshTokenDoc = await verifyToken(refreshToken, tokenTypes.refresh);
@@ -188,10 +195,10 @@ exports.refreshToken = async (refreshToken) => {
     // If expired
     if (!refreshTokenDoc)
         return {
-            type: 'Error',
-            message: 'User token not found!',
-            statusCode: 404
-        }
+            type: "Error",
+            message: "User token not found!",
+            statusCode: 404,
+        };
 
     // Find user of token
     const user = await UserSchema.findById(refreshTokenDoc.userId);
@@ -199,102 +206,114 @@ exports.refreshToken = async (refreshToken) => {
     // If no user found
     if (!user)
         return {
-            type: 'Error',
-            message: 'User not found!',
-            statusCode: 404
-        }
+            type: "Error",
+            message: "User not found!",
+            statusCode: 404,
+        };
 
-    // Delete token 
+    // Check refresh token expired
+    if (
+        (await TokenSchema.findOne({ token: refreshToken })).isExpired(
+            new Date()
+        )
+    ) {
+        await TokenSchema.deleteMany({ token: refreshToken });
+        console.log(1);
+        return {
+            type: "Error",
+            message: "This refresh token is expired!",
+            statusCode: 406,
+        };
+    }
+    // Delete token
     await TokenSchema.deleteMany({ token: refreshToken });
 
     // Generate new token
     const newToken = await generateAuthToken(user);
 
     return {
-        type: 'Success',
-        message: 'Refresh token successfully!',
+        type: "Success",
+        message: "Refresh token successfully!",
         statusCode: 200,
-        newToken
-    }
-}
+        newToken,
+    };
+};
 
 // Forget password --> ask to reset password
 exports.forgetPassword = async (email) => {
-
     // Check if user is existed
     const user = await UserSchema.findOne({ email });
 
     // if not
     if (!user) {
         return {
-            type: 'Error',
-            message: 'No user found',
-            statusCode: 404
-        }
+            type: "Error",
+            message: "No user found",
+            statusCode: 404,
+        };
     }
 
     // Generate code for resetting password
     const { code } = await CodeSchema.create({
         email,
-        type: tokenTypes.resetPassword
-    })
+        type: tokenTypes.resetPassword,
+    });
 
     return {
-        type: 'Success',
-        message: 'Please check reset password code in email!',
+        type: "Success",
+        message: "Please check reset password code in email!",
         statusCode: 200,
-        resetCode: code
-    }
-}
+        resetCode: code,
+    };
+};
 
 // Reset password
 exports.resetPassword = async (resetCode, email, password, confirmPassword) => {
-
     // Check code to reset password (can have many codes because user can request to resend verify code)
     const resetUserDoc = await CodeSchema.find({ email });
 
     // if no code found
     if (resetUserDoc.length < 1)
         return {
-            type: 'Error',
-            message: 'Expired reset process!',
-            statusCode: 400
-        }
+            type: "Error",
+            message: "Expired reset process!",
+            statusCode: 400,
+        };
 
     // Check password matchs confirm password or not
     if (password !== confirmPassword)
         return {
-            type: 'Error',
-            message: 'Password does not match!',
-            statusCode: 400
-        }
+            type: "Error",
+            message: "Password does not match!",
+            statusCode: 400,
+        };
 
     // Check code is correct or not
-    const check = resetUserDoc.find(i => i.code === resetCode);
+    const check = resetUserDoc.find((i) => i.code === resetCode);
 
     //If not
     if (!check)
         return {
-            type: 'Error',
-            message: 'Wrong code!',
-            statusCode: 400
-        }
+            type: "Error",
+            message: "Wrong code!",
+            statusCode: 400,
+        };
 
     const user = await UserSchema.findOne({ email });
 
     if (!user)
         return {
-            type: 'Error',
-            message: 'No user found!',
-            statusCode: 404
-        }
+            type: "Error",
+            message: "No user found!",
+            statusCode: 404,
+        };
 
     if (bcrypt.compareSync(password, user.password))
         return {
-            type: 'Error',
-            message: 'Password must not be the same as the old password',
-            statusCode: 400
-        }
+            type: "Error",
+            message: "Password must not be the same as the old password",
+            statusCode: 400,
+        };
 
     user.password = password;
 
@@ -303,30 +322,34 @@ exports.resetPassword = async (resetCode, email, password, confirmPassword) => {
     await CodeSchema.deleteMany({ email });
 
     return {
-        type: 'Success',
-        message: 'Reset password successfully!',
-        statusCode: 200
-    }
-}
+        type: "Success",
+        message: "Reset password successfully!",
+        statusCode: 200,
+    };
+};
 
 // Change password
-exports.changePassword = async (password, newPassword, confirmPassword, userId) => {
-
+exports.changePassword = async (
+    password,
+    newPassword,
+    confirmPassword,
+    userId
+) => {
     // Check new password is match confirm password or not
     if (newPassword !== confirmPassword)
         return {
-            type: 'Error',
-            message: 'Password is not match!',
-            statusCode: 400
-        }
+            type: "Error",
+            message: "Password is not match!",
+            statusCode: 400,
+        };
 
     // Check new password is match current password or not
     if (password === newPassword)
         return {
-            type: 'Error',
-            message: 'Password and new password must not be same!',
-            statusCode: 400
-        }
+            type: "Error",
+            message: "Password and new password must not be same!",
+            statusCode: 400,
+        };
 
     //Find user in schema
     const user = await UserSchema.findById(userId);
@@ -337,14 +360,13 @@ exports.changePassword = async (password, newPassword, confirmPassword, userId) 
     // If not
     if (!isMatch)
         return {
-            type: 'Error',
-            message: 'Current password is not match!',
-            statusCode: 400
-        }
+            type: "Error",
+            message: "Current password is not match!",
+            statusCode: 400,
+        };
 
     // Update password
     user.password = newPassword;
-
 
     // Save password
     await user.save();
@@ -353,11 +375,11 @@ exports.changePassword = async (password, newPassword, confirmPassword, userId) 
     await TokenSchema.deleteMany({ userId: userId });
 
     return {
-        type: 'Success',
-        message: 'Change password successfully!',
-        statusCode: 200
+        type: "Success",
+        message: "Change password successfully!",
+        statusCode: 200,
     };
-}
+};
 
 // Sign out
 exports.signout = async (userId) => {
@@ -367,14 +389,14 @@ exports.signout = async (userId) => {
     // Check if no token found
     if (deleleResponse.deletedCount === 0)
         return {
-            type: 'Error',
-            message: 'Please login again!',
-            statusCode: 400
-        }
+            type: "Error",
+            message: "Please login again!",
+            statusCode: 400,
+        };
 
     return {
-        type: 'Success',
-        message: 'Sign out successfully!',
-        statusCode: 200
-    }
-}
+        type: "Success",
+        message: "Sign out successfully!",
+        statusCode: 200,
+    };
+};
