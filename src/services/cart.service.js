@@ -1,45 +1,48 @@
-const CartSchema = require('../models/CartSchema');
-const ColorSchema = require('../models/ColorSchema');
-const SizeSchema = require('../models/SizeSchema');
-const ProductSchema = require('../models/ProductSchema');
+const CartSchema = require("../models/CartSchema");
+const ColorSchema = require("../models/ColorSchema");
+const SizeSchema = require("../models/SizeSchema");
+const ProductSchema = require("../models/ProductSchema");
 
 exports.addItemToCart = async (email, productId, quantity, color, size) => {
-
     if (quantity <= 0)
         return {
-            type: 'Error',
-            message: 'Quantity must be greater than zero!',
-            statusCode: 400
-        }
+            type: "Error",
+            message: "Quantity must be greater than zero!",
+            statusCode: 400,
+        };
 
     const product = await ProductSchema.findById(productId);
 
     if (!product)
         return {
-            type: 'Error',
-            message: 'No product found!',
-            statusCode: 404
-        }
+            type: "Error",
+            message: "No product found!",
+            statusCode: 404,
+        };
 
     const { price } = product;
 
     const cart = await CartSchema.findOne({ email });
 
-    const colorCheck = product.colors.find(cl => cl.color.toString() === color.toString());
+    const colorCheck = product.colors.find(
+        (cl) => cl.color.toString() === color.toString()
+    );
     if (!colorCheck)
         return {
-            type: 'Error',
-            message: 'This product does not have this color!',
-            statusCode: 400
-        }
+            type: "Error",
+            message: "This product does not have this color!",
+            statusCode: 400,
+        };
 
-    const sizeCheck = product.sizes.find(sz => sz.size.toString() === size.toString());
+    const sizeCheck = product.sizes.find(
+        (sz) => sz.size.toString() === size.toString()
+    );
     if (!sizeCheck)
         return {
-            type: 'Error',
-            message: 'This product does not have this size!',
-            statusCode: 400
-        }
+            type: "Error",
+            message: "This product does not have this size!",
+            statusCode: 400,
+        };
 
     // If no cart existed
     if (!cart) {
@@ -51,281 +54,290 @@ exports.addItemToCart = async (email, productId, quantity, color, size) => {
                     color: colorCheck._id,
                     size: sizeCheck._id,
                     totalProductQuantity: quantity,
-                    totalProductPrice: price * quantity
-                }
-            ]
-        }
+                    totalProductPrice: price * quantity,
+                },
+            ],
+        };
 
         const newCart = await CartSchema.create(cartData);
 
         return {
-            type: 'Success',
-            message: 'Create new cart and add item successfully!',
+            type: "Success",
+            message: "Create new cart and add item successfully!",
             statusCode: 200,
-            cart: newCart
-        }
+            cart: newCart,
+        };
     }
 
     const indexFound = cart.items.findIndex(
-        item =>
+        (item) =>
             item.product._id.toString() === productId.toString() &&
             item.color._id.toString() === colorCheck._id.toString() &&
             item.size._id.toString() === sizeCheck._id.toString()
-    )
+    );
 
     // If this product not exist in this cart
     if (indexFound !== -1) {
         cart.items[indexFound].totalProductQuantity += quantity;
         cart.items[indexFound].totalProductPrice += price * quantity;
-    }
-    else {
+    } else {
         cart.items.push({
             product: productId,
             color: colorCheck._id,
             size: sizeCheck._id,
             totalProductQuantity: quantity,
-            totalProductPrice: price * quantity
+            totalProductPrice: price * quantity,
         });
     }
 
     await cart.save();
 
     return {
-        type: 'Success',
-        message: 'Add item to cart successfully!',
+        type: "Success",
+        message: "Add item to cart successfully!",
         statusCode: 200,
-        cart
-    }
-}
+        cart,
+    };
+};
 
 exports.getCart = async (email) => {
     const cart = await CartSchema.findOne({ email });
 
     if (!cart)
         return {
-            type: 'Error',
-            message: 'No cart found!',
-            statusCode: 404
-        }
+            type: "Error",
+            message: "No cart found!",
+            statusCode: 404,
+        };
 
     return {
-        type: 'Success',
-        message: 'Cart found!',
+        type: "Success",
+        message: "Cart found!",
         statusCode: 200,
-        cart
-    }
-}
+        cart,
+    };
+};
 
 exports.deleteCart = async (email) => {
     const { deletedCount } = await CartSchema.deleteOne({ email });
 
     if (deletedCount === 0)
         return {
-            type: 'Error',
-            message: 'No cart found!',
-            statusCode: 404
-        }
+            type: "Error",
+            message: "No cart found!",
+            statusCode: 404,
+        };
 
     return {
-        type: 'Error',
-        message: 'Delete cart successfully!',
-        statusCode: 200
-    }
-}
+        type: "Error",
+        message: "Delete cart successfully!",
+        statusCode: 200,
+    };
+};
 
 exports.deleteItem = async (email, productId, color, size) => {
     const cart = await CartSchema.findOne({ email });
 
     if (!cart)
         return {
-            type: 'Error',
-            message: 'No cart found!',
-            statusCode: 404
-        }
+            type: "Error",
+            message: "No cart found!",
+            statusCode: 404,
+        };
 
     const colorDoc = await ColorSchema.isExisted(productId, color);
 
     if (!colorDoc)
         return {
-            type: 'Error',
-            message: 'This color does not exist!',
-            statusCode: 404
-        }
+            type: "Error",
+            message: "This color does not exist!",
+            statusCode: 404,
+        };
 
     const sizeDoc = await SizeSchema.isExisted(productId, size);
 
     if (!sizeDoc)
         return {
-            type: 'Error',
-            message: 'This size does not exist!',
-            statusCode: 404
-        }
+            type: "Error",
+            message: "This size does not exist!",
+            statusCode: 404,
+        };
 
     const product = cart.items.find((item) => {
-        return item.product._id.toString() === productId.toString()
-            && item.color.color.toString() === color.toString()
-            && item.size.size.toString() === size.toString();
-    })
+        return (
+            item.product._id.toString() === productId.toString() &&
+            item.color.color.toString() === color.toString() &&
+            item.size.size.toString() === size.toString()
+        );
+    });
 
     if (!product)
         return {
-            type: 'Error',
-            message: 'This product does not exist in your cart!',
-            statusCode: 404
-        }
-
+            type: "Error",
+            message: "This product does not exist in your cart!",
+            statusCode: 404,
+        };
 
     const newCart = await cart.updateOne({
         $pull: {
             items: {
                 product: productId,
                 color: colorDoc._id,
-                size: sizeDoc._id
-            }
+                size: sizeDoc._id,
+            },
         },
         totalQuantity: cart.totalQuantity - product.totalProductQuantity,
-        totalPrice: cart.totalPrice - product.totalProductPrice
+        totalPrice: cart.totalPrice - product.totalProductPrice,
     });
 
     return {
-        type: 'Success',
-        message: 'Remove item successfully!',
+        type: "Success",
+        message: "Remove item successfully!",
         statusCode: 200,
-        cart: newCart
-    }
-}
+        cart: newCart,
+    };
+};
 
 exports.increaseOne = async (email, productId, color, size) => {
     const cart = await CartSchema.findOne({ email });
 
     if (!cart)
         return {
-            type: 'Error',
-            message: 'No cart found for user!',
-            statusCode: 404
-        }
+            type: "Error",
+            message: "No cart found for user!",
+            statusCode: 404,
+        };
 
     const product = await ProductSchema.findById(productId);
 
     if (!product)
         return {
-            type: 'Error',
-            message: 'No found found!',
-            statusCode: 404
-        }
+            type: "Error",
+            message: "No found found!",
+            statusCode: 404,
+        };
 
     const colorDoc = await ColorSchema.isExisted(productId, color);
 
     if (!colorDoc)
         return {
-            type: 'Error',
-            message: 'This color does not exist!',
-            statusCode: 404
-        }
+            type: "Error",
+            message: "This color does not exist!",
+            statusCode: 404,
+        };
 
     const sizeDoc = await SizeSchema.isExisted(productId, size);
 
     if (!sizeDoc)
         return {
-            type: 'Error',
-            message: 'This size does not exist!',
-            statusCode: 404
-        }
+            type: "Error",
+            message: "This size does not exist!",
+            statusCode: 404,
+        };
 
     const indexProductExistedInCart = cart.items.findIndex((item) => {
-        return item.product._id.toString() === productId.toString()
-            && item.color.color.toString() === color.toString()
-            && item.size.size.toString() === size.toString();
-    })
+        return (
+            item.product._id.toString() === productId.toString() &&
+            item.color.color.toString() === color.toString() &&
+            item.size.size.toString() === size.toString()
+        );
+    });
 
     if (indexProductExistedInCart !== -1) {
         cart.items[indexProductExistedInCart].totalProductQuantity += 1;
-        cart.items[indexProductExistedInCart].totalProductPrice += product.price;
+        cart.items[indexProductExistedInCart].totalProductPrice +=
+            product.priceAfterDiscount;
         await cart.save();
 
         return {
-            type: 'Success',
+            type: "Success",
             message: `Increate item ${product.name} by one successfully!`,
             statusCode: 200,
-            cart
-        }
+            cart,
+        };
     }
 
     return {
-        type: 'Error',
+        type: "Error",
         message: `No item found in cart!`,
-        statusCode: 404
-    }
-}
+        statusCode: 404,
+    };
+};
 
 exports.decreaseOne = async (email, productId, color, size) => {
     const cart = await CartSchema.findOne({ email });
 
     if (!cart)
         return {
-            type: 'Error',
-            message: 'No cart found for user!',
-            statusCode: 404
-        }
+            type: "Error",
+            message: "No cart found for user!",
+            statusCode: 404,
+        };
 
     const product = await ProductSchema.findById(productId);
 
     if (!product)
         return {
-            type: 'Error',
-            message: 'No found found!',
-            statusCode: 404
-        }
+            type: "Error",
+            message: "No found found!",
+            statusCode: 404,
+        };
 
     const colorDoc = await ColorSchema.isExisted(productId, color);
 
     if (!colorDoc)
         return {
-            type: 'Error',
-            message: 'This color does not exist!',
-            statusCode: 404
-        }
+            type: "Error",
+            message: "This color does not exist!",
+            statusCode: 404,
+        };
 
     const sizeDoc = await SizeSchema.isExisted(productId, size);
 
     if (!sizeDoc)
         return {
-            type: 'Error',
-            message: 'This size does not exist!',
-            statusCode: 404
-        }
+            type: "Error",
+            message: "This size does not exist!",
+            statusCode: 404,
+        };
 
     const indexProductExistedInCart = cart.items.findIndex((item) => {
-        return item.product._id.toString() === productId.toString()
-            && item.color.color.toString() === color.toString()
-            && item.size.size.toString() === size.toString();
-    })
+        return (
+            item.product._id.toString() === productId.toString() &&
+            item.color.color.toString() === color.toString() &&
+            item.size.size.toString() === size.toString()
+        );
+    });
 
     if (indexProductExistedInCart !== -1) {
-        const updateTotalProductQuantity = cart.items[indexProductExistedInCart].totalProductQuantity - 1;
-        const updatetotalProductPrice = cart.items[indexProductExistedInCart].totalProductPrice - product.price;
+        const updateTotalProductQuantity =
+            cart.items[indexProductExistedInCart].totalProductQuantity - 1;
+        const updatetotalProductPrice =
+            cart.items[indexProductExistedInCart].totalProductPrice -
+            product.priceAfterDiscount;
 
         if (updateTotalProductQuantity <= 0 || updatetotalProductPrice <= 0) {
             cart.items.splice(indexProductExistedInCart, 1);
         } else {
-            cart.items[indexProductExistedInCart].totalProductQuantity = updateTotalProductQuantity;
-            cart.items[indexProductExistedInCart].totalProductPrice = updatetotalProductPrice;
+            cart.items[indexProductExistedInCart].totalProductQuantity =
+                updateTotalProductQuantity;
+            cart.items[indexProductExistedInCart].totalProductPrice =
+                updatetotalProductPrice;
         }
-        
+
         await cart.save();
 
         return {
-            type: 'Success',
+            type: "Success",
             message: `Decrease item ${product.name} by one successfully!`,
             statusCode: 200,
-            cart
-        }
+            cart,
+        };
     }
-
 
     return {
-        type: 'Error',
+        type: "Error",
         message: `No item found in cart!`,
-        statusCode: 404
-    }
-}
+        statusCode: 404,
+    };
+};

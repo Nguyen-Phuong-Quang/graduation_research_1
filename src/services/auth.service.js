@@ -218,7 +218,6 @@ exports.refreshToken = async (refreshToken) => {
         )
     ) {
         await TokenSchema.deleteMany({ token: refreshToken });
-        console.log(1);
         return {
             type: "Error",
             message: "This refresh token is expired!",

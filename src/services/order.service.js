@@ -26,7 +26,6 @@ exports.createOrder = async (body, user) => {
 
     const cart = await CartSchema.findOne({ email: user.email });
 
-    console.log(cart);
     if (!cart || cart.items.length === 0)
         return {
             type: "Error",
@@ -123,7 +122,6 @@ exports.cancelOrder = async (orderId) => {
     for (const item of order.products) {
         const product = await ProductSchema.findById(item.product);
 
-        console.log(product);
         if (!product)
             return {
                 type: "Error",

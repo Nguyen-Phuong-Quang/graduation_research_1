@@ -1,13 +1,13 @@
-const mongoose = require('mongoose');
-const config = require('./config')
+const mongoose = require("mongoose");
+const config = require("./config");
 
 mongoose.connection.on("connected", () => {
     console.log("DB connected...!");
-})
+});
 
 mongoose.connection.on("disconnected", () => {
     console.log("DB disconnected ...x...x...x...!");
-})
+});
 
 module.exports = async function connectMongoDb() {
     try {
@@ -15,4 +15,4 @@ module.exports = async function connectMongoDb() {
     } catch (err) {
         console.log(err);
     }
-}
+};
