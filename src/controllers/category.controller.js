@@ -104,7 +104,7 @@ exports.updateCategoryImage = async (req, res, next) => {
                 req.params.categoryId,
                 req.file
             );
-            
+
         if (type === "Error")
             return next(new CustomErrorHandler(statusCode, message));
 

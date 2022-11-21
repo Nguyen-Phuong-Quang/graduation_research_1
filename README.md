@@ -86,20 +86,20 @@
   * Get All Discount Codes [Admin]
   * Verify Discount Code [User]
   * Delete Discount Code [Admin]
-  * Cancel Discount Code [User]
+  * Cancel Discount Code [User] -->
 * Order Services
   * Create New Order [User]
   * Query Orders [User]
   * Query Order Using It's ID [User]
   * Cancel Order [User]
-  * Update Order Status [Admin]
+  * Update Order Status [Admin], [Seller]
 * Category Services
   * Create New Category [User]
   * Query Categories [Public]
   * Query Category Using It's ID [Public]
   * Update Category Details [Admin]
   * Update Category Image [Admin]
-  * Delete Category [Admin] -->
+  * Delete Category [Admin]
 ## Built With
 
 List of any major frameworks used to build the project.
