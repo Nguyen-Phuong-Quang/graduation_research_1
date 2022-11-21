@@ -16,16 +16,11 @@ router
 
 // Get order by id
 // Delete order by id
+// Update order status
 router
     .route("/:orderId")
     .get(orderController.getOrderById)
-    .delete(orderController.cancelOrder);
-
-// Update order status
-router.patch(
-    "/:orderId",
-    restrictedTo("ADMIN", "SELLER"),
-    orderController.updateOrderStatus
-);
+    .delete(orderController.cancelOrder)
+    .patch(restrictedTo("ADMIN", "SELLER"), orderController.updateOrderStatus);
 
 module.exports = router;
