@@ -20,7 +20,7 @@ exports.addItemToCart = async (email, productId, quantity, color, size) => {
             statusCode: 404,
         };
 
-    const { price } = product;
+    const { priceAfterDiscount } = product;
 
     const cart = await CartSchema.findOne({ email });
 
@@ -54,7 +54,7 @@ exports.addItemToCart = async (email, productId, quantity, color, size) => {
                     color: colorCheck._id,
                     size: sizeCheck._id,
                     totalProductQuantity: quantity,
-                    totalProductPrice: price * quantity,
+                    totalProductPrice: priceAfterDiscount * quantity,
                 },
             ],
         };
@@ -79,14 +79,14 @@ exports.addItemToCart = async (email, productId, quantity, color, size) => {
     // If this product not exist in this cart
     if (indexFound !== -1) {
         cart.items[indexFound].totalProductQuantity += quantity;
-        cart.items[indexFound].totalProductPrice += price * quantity;
+        cart.items[indexFound].totalProductPrice += priceAfterDiscount * quantity;
     } else {
         cart.items.push({
             product: productId,
             color: colorCheck._id,
             size: sizeCheck._id,
             totalProductQuantity: quantity,
-            totalProductPrice: price * quantity,
+            totalProductPrice: priceAfterDiscount * quantity,
         });
     }
 

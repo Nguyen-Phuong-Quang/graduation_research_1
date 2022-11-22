@@ -485,3 +485,49 @@ exports.deleteSize = async (productId, seller, size) => {
         statusCode: 200,
     };
 };
+
+exports.getProductStatistic = async () => {
+    return await ProductSchema.aggregate([
+        {
+            $match: { averageRating: { $gte: 4.5 } },
+        },
+        {
+            $group: {
+                _id: "$category",
+                "Number of products": { $sum: 1 },
+                "Number of ratings": { $sum: "$ratingQuantity" },
+                "Average rating": { $avg: "$averageRating" },
+                "Average price": { $avg: "$price" },
+                "Minimum price": { $min: "$price" },
+                "Maximum price": { $max: "$price" },
+                Quantity: { $sum: "$quantity" },
+            },
+        },
+        {
+            $lookup: {
+                from: "categories",
+                as: "Category",
+                localField: "_id",
+                foreignField: "_id",
+            },
+        },
+        {
+            $unwind: "$Category",
+        },
+        {
+            $project: {
+                _id: 0,
+                "Category": {
+                    name: 1,
+                },
+                Quantity: 1,
+                "Number of products": 1,
+                "Number of ratings": 1,
+                "Average rating": 1,
+                "Average price": 1,
+                "Minimum price": 1,
+                "Maximum price": 1,
+            },
+        },
+    ]);
+};
