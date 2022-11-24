@@ -57,9 +57,11 @@ const UserSchema = new mongoose.Schema(
             type: String,
             // required: true
         },
-        discountCode: {
-            type: String,
-        },
+        discountCodes: [
+            {
+                type: String,
+            },
+        ],
     },
     {
         timestamps: true,

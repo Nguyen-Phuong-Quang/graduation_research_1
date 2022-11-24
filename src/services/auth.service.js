@@ -67,7 +67,7 @@ exports.signup = async (body, image) => {
     );
 
     // Create a code for verifying create account service
-    const { code } = await CodeSchema.create({
+    await CodeSchema.create({
         name,
         email,
         password,
@@ -84,7 +84,6 @@ exports.signup = async (body, image) => {
         type: "Success",
         statusCode: 201,
         message: "Sign up successfully!",
-        verifyEmailCode: code,
     };
 };
 

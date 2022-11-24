@@ -13,7 +13,7 @@ module.exports = async (req, res, next) => {
 
         const decoded = jwt.verify(token, config.jwt.jwt_secret);
 
-        const user = await UserSchema.findById(decoded.userId).select('email role');
+        const user = await UserSchema.findById(decoded.userId).select('email role discountCodes');
 
         if (!user)
             return next(new CustomErrorHandler(401, 'User belonging to this token does not exist!'));
