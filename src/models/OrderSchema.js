@@ -44,9 +44,6 @@ const OrderSchema = new mongoose.Schema(
                 "e-banking",
             ],
         },
-        paymentStripeId: {
-            type: String,
-        },
         taxPrice: {
             type: Number,
             default: 0.0,

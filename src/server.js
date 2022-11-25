@@ -2,7 +2,6 @@ const express = require('express');
 const cors = require('cors')
 const cookieParser = require('cookie-parser');
 const errorHandler = require('./middlewares/errorHandler');
-const routes = require('./routes');
 const connectMongoDb = require('./config/mongodb');
 const config = require('./config/config');
 const xss = require('xss-clean');
@@ -41,7 +40,6 @@ app.use('/api/v1', mainRouter);
 
 // Handle if occur error
 app.use(errorHandler);
-
 
 app.listen(PORT, () => {
     connectMongoDb();

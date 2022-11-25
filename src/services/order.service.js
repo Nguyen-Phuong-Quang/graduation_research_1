@@ -1,13 +1,13 @@
 const moment = require("moment");
-
 const OrderSchema = require("../models/OrderSchema");
 const CartSchema = require("../models/CartSchema");
 const ProductSchema = require("../models/ProductSchema");
+const DiscountSchema = require("../models/DiscountSchema");
 const apiFeatures = require("../utils/apiFeatures");
 const orderStatus = require("../constants/oderStatus");
 
 exports.createOrder = async (body, user) => {
-    const { shippingAddress, paymentMethod, phone } = body;
+    const { shippingAddress, paymentMethod, phone, discountCode } = body;
     const { address, city, postalCode, country } = shippingAddress;
 
     if (
@@ -33,22 +33,63 @@ exports.createOrder = async (body, user) => {
             statusCode: 404,
         };
 
+    let finalPrice = cart.totalPrice;
+
+    if (discountCode) {
+        // Check discount code exist
+        const discount = await DiscountSchema.findOne({ code: discountCode });
+
+        if (!discount)
+            return {
+                type: "Error",
+                message: "No discount code found!",
+                statusCode: 404,
+            };
+
+        // Handle discount code
+        if (!user.discountCodes.includes(discountCode))
+            return {
+                type: "Error",
+                message: "Not your discount code!",
+                statusCode: 400,
+            };
+
+        // Check valid day
+        if (moment().unix() > discount.validUntil)
+            return {
+                type: "Error",
+                message: "Discount code is expired!",
+                statusCode: 400,
+            };
+
+        if (cart.totalPrice > discount.minOrderValue) {
+            // Check price unit
+            if (discount.discountUnit === "percent") {
+                // Check value to reduce amount
+                const reducedAmount =
+                    (cart.totalPrice * discount.discountValue) / 100;
+
+                if (reducedAmount > discount.maxDiscountAmount) {
+                    finalPrice -= discount.maxDiscountAmount;
+                } else {
+                    finalPrice -= reducedAmount;
+                }
+            } else {
+                finalPrice -= discount.discountValue;
+            }
+        }
+    }
+
     const orderDetail = {
         products: cart.items,
         user: user._id,
-        orderPrice: cart.totalPrice,
+        orderPrice: finalPrice,
         isPaid: true,
         paidAt: moment(),
         shippingAddress,
         phone,
+        paymentMethod,
     };
-
-    // if (paymentMethod === "cash") {
-    //     orderDetail.paymentMethod = paymentMethod;
-    // }
-
-    // Check payment method (not finish)
-    orderDetail.paymentMethod = paymentMethod;
 
     const order = await OrderSchema.create(orderDetail);
 

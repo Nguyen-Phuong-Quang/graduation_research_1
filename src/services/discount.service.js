@@ -47,7 +47,6 @@ exports.verifyDiscountCode = async (discountCode, user) => {
             statusCode: 400,
         };
 
-    console.log(user);
     if (user.discountCodes.includes(discountCode))
         return {
             type: "Error",
@@ -117,7 +116,7 @@ exports.generateDiscountCode = async (body) => {
         code,
         discountValue,
         discountUnit,
-        validUntil: moment(validUntil),
+        validUntil: moment(validUntil).unix(),
         available,
         minOrderValue,
         maxDiscountAmount,
@@ -140,6 +139,10 @@ exports.deleteDiscountCode = async (discountId) => {
             message: "No discount code found!",
             statusCode: 404,
         };
+
+    await UserSchema.findByIdAndUpdate(user._id, {
+        $pull: { discountCodes: success.code },
+    });
 
     return {
         type: "Success",

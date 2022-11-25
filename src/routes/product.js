@@ -5,16 +5,13 @@ const { uploadAnyFile } = require("../utils/multer");
 const restrictedTo = require("../middlewares/restrictedTo");
 const router = express.Router();
 
-// Get product statistic
-router.get("/product-statistic", productController.getProductStatistic);
-
 // Get product by id
 router.get("/:productId", productController.getProductById);
 
 // Get all product
 router.get("/", productController.getAllProducts);
 
-router.use(authorize, restrictedTo("ADMIN", "USER"));
+router.use(authorize, restrictedTo("ADMIN", "SELLER"));
 
 // Add color and delete color
 router
@@ -45,11 +42,9 @@ router.patch(
 router.delete("/delete/:productId", productController.deleteProductById);
 
 // Add new product
-router.post(
-    "/add",
-    restrictedTo("ADMIN", "USER"),
-    uploadAnyFile(),
-    productController.addProduct
-);
+router.post("/add", uploadAnyFile(), productController.addProduct);
+
+// Get product statistic
+router.get("/product-statistic", productController.getProductStatistic);
 
 module.exports = router;

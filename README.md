@@ -57,25 +57,24 @@
   * Delete Cart Item [User]
   * Delete Cart [User]
 * Review Services
-  <!-- * Create New Review [User] -->
-  <!-- * Query All Reviews [Public] -->
-  <!-- * Query Review Using It's ID [Public] -->
-  <!-- * Update Review Using It's ID [User] -->
-  <!-- * Delete Review Using It's ID [User] -->
+  * Create New Review [User] -->
+  * Query All Reviews [Public]
+  * Query Review Using It's ID [Public]
+  * Update Review Using It's ID [User]
+  * Delete Review Using It's ID [User]
 * Product Services
   * Query products [Public]
   * Query Product Using It's ID [Public]
   * Create new product [Seller]
   * Update Product Details [Seller]
   * Update Product Images [Seller]
-  * Delete Product Using It's ID [User]
-  <!-- * Get Products Statics [Admin] -->
-  <!-- * Top 5 Cheapeast Products [Public] -->
+  * Delete Product Using It's ID [Seller]
+  * Get Products Statics [Admin]
   * Add Product Color [Seller]
   * Delete Product Color [Seller]
   * Add Product Size [Seller]
   * Delete Product Size [Seller]
-<!-- * Favorite Services
+* Favorite Services
   * Get Favorite Products List [User]
   * Add Product to Favorite List [User]
   * Delete Product From Favorite List [User]
@@ -86,7 +85,7 @@
   * Get All Discount Codes [Admin]
   * Verify Discount Code [User]
   * Delete Discount Code [Admin]
-  * Cancel Discount Code [User] -->
+  * Cancel Discount Code [User]
 * Order Services
   * Create New Order [User]
   * Query Orders [User]
@@ -121,7 +120,7 @@ List of any major frameworks used to build the project.
 * [Nodemailer](https://www.npmjs.com/package/nodemailer) - Easy as cake e-mail sending from your Node.js applications
 * [Validator](https://www.npmjs.com/package/validator) - A library of string validators and sanitizers.
 * [XSS Clean](https://www.npmjs.com/package/xss-clean) - Middleware to sanitize user input
-* [Stripe](https://www.npmjs.com/package/stripe) - The Stripe Node library provides convenient access to the Stripe API from applications written in server-side JavaScript.
+<!-- * [Stripe](https://www.npmjs.com/package/stripe) - The Stripe Node library provides convenient access to the Stripe API from applications written in server-side JavaScript. -->
 ## Installation
 
 You can fork the app or you can git-clone the app into your local machine. Once done that, please install all the
