@@ -7,10 +7,10 @@ const { uploadSingleFile } = require('../utils/multer');
 const router = express.Router();
 
 // Get user by id
-router.get('/:id', userController.getUser);
+router.get('/:id', userController.getUserById);
 
 // Get users by query
-router.get('/', userController.getUsers);
+router.get('/', userController.getUsersByQuery);
 
 // Authorize
 router.use(authorize);
@@ -22,7 +22,7 @@ router.post('/', restrictedTo('ADMIN'), uploadSingleFile('image'), userControlle
 router.patch('/update-user-detail', userController.updateUserDetail);
 
 // Update user profile
-router.patch('/update-user-profile', uploadSingleFile('image'), userController.updateUserProfile);
+router.patch('/update-user-profile', uploadSingleFile('image'), userController.updateUserProfileImage);
 
 // Delete user by id
 router.delete('/delete-user/:id', restrictedTo('ADMIN'), userController.deleteUserById);

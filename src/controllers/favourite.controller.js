@@ -1,6 +1,15 @@
 const favouriteService = require("../services/favourite.service");
 const CustomErrorHandler = require("../utils/CustomErrorHandler");
 
+/**
+ * @desc       Add product to favorite list controller
+ * @param     { object } req - Request object
+ * @param     { object } res - Response object
+ * @param     { function } next - Next callback funtion
+ * @property  { String } req.user._id - User id
+ * @property  { String } req.params.productId - Product ID
+ * @returns   { JSON } - A JSON object representing the type, message
+ */
 exports.addToFavourite = async (req, res, next) => {
     try {
         const { type, message, statusCode } =
@@ -21,6 +30,15 @@ exports.addToFavourite = async (req, res, next) => {
     }
 };
 
+/**
+ * @desc      Delete product from favorite list controller
+ * @param     { object } req - Request object
+ * @param     { object } res - Response object
+ * @param     { function } next - Next callback funtion
+ * @property  { String } req.user._id - User id
+ * @property  { String } req.params.productId - Product ID
+ * @returns   { JSON } - A JSON object representing the type, message
+ */
 exports.deleteProductFromFavourite = async (req, res, next) => {
     try {
         const { type, message, statusCode } =
@@ -41,6 +59,14 @@ exports.deleteProductFromFavourite = async (req, res, next) => {
     }
 };
 
+/**
+ * @desc      Get user's favorite list controller
+ * @param     { object } req - Request object
+ * @param     { object } res - Response object
+ * @param     { function } next - Next callback funtion
+ * @property  { String } req.user._id - User id
+ * @returns   { JSON } - A JSON object representing the type, message, and favourite list
+ */
 exports.getFavouriteList = async (req, res, next) => {
     try {
         const { type, message, statusCode, favourite } =
@@ -59,6 +85,15 @@ exports.getFavouriteList = async (req, res, next) => {
     }
 };
 
+/**
+ * @desc       Check if product in favorite list controller
+ * @param     { object } req - Request object
+ * @param     { object } res - Response object
+ * @param     { function } next - Next callback funtion
+ * @property  { String } req.user._id - User id
+ * @property  { String } req.params.productId - Product ID
+ * @returns   { JSON } - A JSON object representing the type, message
+ */
 exports.checkProductInFavouriteList = async (req, res, next) => {
     try {
         const { type, message, statusCode } =

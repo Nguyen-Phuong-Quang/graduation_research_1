@@ -1,6 +1,15 @@
 const orderService = require("../services/order.service");
 const CustomErrorHandler = require("../utils/CustomErrorHandler");
 
+/**
+ * @desc      Create New Order Controller
+ * @param     { object } req - Request object
+ * @param     { object } res - Response object
+ * @param     { function } next - Next callback funtion
+ * @property  { Object } req.body - Body object data
+ * @property  { Object } req.user - An object contains logged in user data
+ * @returns   { JSON } - A JSON object representing the type, message and the order
+ */
 exports.createOrder = async (req, res, next) => {
     try {
         const { type, message, statusCode, order } =
@@ -19,6 +28,14 @@ exports.createOrder = async (req, res, next) => {
     }
 };
 
+/**
+ * @desc      Get All Orders Controller
+ * @param     { object } req - Request object
+ * @param     { object } res - Response object
+ * @param     { function } next - Next callback funtion
+ * @property  { Number }  req.query.limit - Limit number of items
+ * @returns   { JSON } - A JSON object representing the type, message and the orders
+ */
 exports.getOrdersByQuery = async (req, res, next) => {
     try {
         if (!req.query.limit) req.query.limit = 10;
@@ -39,6 +56,14 @@ exports.getOrdersByQuery = async (req, res, next) => {
     }
 };
 
+/**
+ * @desc      Get Order Using It's ID Controller
+ * @param     { object } req - Request object
+ * @param     { object } res - Response object
+ * @param     { function } next - Next callback funtion
+ * @property  { String } req.params.orderId - Order ID
+ * @returns   { JSON } - A JSON object representing the type, message and the order
+ */
 exports.getOrderById = async (req, res, next) => {
     try {
         const { type, message, statusCode, order } =
@@ -57,6 +82,14 @@ exports.getOrderById = async (req, res, next) => {
     }
 };
 
+/**
+ * @desc      Cancel Order Controller
+ * @param     { object } req - Request object
+ * @param     { object } res - Response object
+ * @param     { function } next - Next callback funtion
+ * @property  { String } req.params.orderId - Order ID
+ * @returns   { JSON } - A JSON object representing the type, message
+ */
 exports.cancelOrder = async (req, res, next) => {
     try {
         const { type, message, statusCode } = await orderService.cancelOrder(
@@ -75,6 +108,15 @@ exports.cancelOrder = async (req, res, next) => {
     }
 };
 
+/**
+ * @desc      Update order status Controller
+ * @param     { object } req - Request object
+ * @param     { object } res - Response object
+ * @param     { function } next - Next callback funtion
+ * @property  { String } req.body.status - Order new status
+ * @property  { String } req.params.orderId - Order ID
+ * @returns   { JSON } - A JSON object representing the type, message
+ */
 exports.updateOrderStatus = async (req, res, next) => {
     try {
         const { type, message, statusCode } =

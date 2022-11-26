@@ -486,7 +486,7 @@ exports.deleteSize = async (productId, seller, size) => {
     };
 };
 
-exports.getProductStatistic = async () => {
+exports.getProductStatics = async () => {
     return await ProductSchema.aggregate([
         {
             $match: { averageRating: { $gte: 4.5 } },

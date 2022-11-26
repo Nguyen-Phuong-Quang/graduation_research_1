@@ -4,7 +4,7 @@ const moment = require("moment");
 const TokenSchema = new mongoose.Schema(
     {
         token: { type: String, required: true },
-        userId: { type: mongoose.Types.ObjectId, ref: "users" },
+        userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
         expires: { type: Date, required: true },
         type: { type: String, required: true },
     },

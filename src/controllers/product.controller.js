@@ -19,6 +19,13 @@ exports.getProductById = async (req, res, next) => {
     }
 };
 
+/**
+ * @desc      Get All Products Controller
+ * @param     { object } req - Request object
+ * @param     { object } res - Response object
+ * @param     { function } next - Next callback funtion
+ * @returns   { JSON } - A JSON object representing the type, message and the products
+ */
 exports.getAllProducts = async (req, res, next) => {
     try {
         const { type, message, statusCode, products } =
@@ -37,11 +44,24 @@ exports.getAllProducts = async (req, res, next) => {
     }
 };
 
+/**
+ * @desc      Create New Product Controller
+ * @param     { object } req - Request object
+ * @param     { object } res - Response object
+ * @param     { function } next - Next callback funtion
+ * @property  { Object } req.body - Body object data
+ * @property  { Object } req.files - Product images
+ * @property  { String } req.user._id - User ID
+ * @returns   { JSON } - A JSON object representing the type, message and the products
+ */
 exports.addProduct = async (req, res, next) => {
-    const { body, files, user } = req;
     try {
         const { type, message, statusCode, product } =
-            await productService.createProduct(body, files, user);
+            await productService.createProduct(
+                req.body,
+                req.files,
+                req.user._id
+            );
 
         if (type === "Error")
             return next(new CustomErrorHandler(statusCode, message));
@@ -56,6 +76,16 @@ exports.addProduct = async (req, res, next) => {
     }
 };
 
+/**
+ * @desc      Update Product Details Controller
+ * @param     { object } req - Request object
+ * @param     { object } res - Response object
+ * @param     { function } next - Next callback funtion
+ * @property  { String } req.params.productId - Product ID
+ * @property  { String } req.user._id - User ID
+ * @property  { Object } req.body - Body object data
+ * @returns   { JSON } - A JSON object representing the type, message and the product data
+ */
 exports.updateProductDetail = async (req, res, next) => {
     try {
         const { type, message, statusCode, product } =
@@ -78,6 +108,16 @@ exports.updateProductDetail = async (req, res, next) => {
     }
 };
 
+/**
+ * @desc      Update Product Images Controller (Main image and others images)
+ * @param     { Object } req - Request object
+ * @param     { Object } res - Response object
+ * @param     { function } next - Next callback funtion
+ * @property  { String } req.params.productId - Product ID
+ * @property  { String } req.user._id - Seller ID
+ * @property  { Object } req.files - Product images
+ * @returns   { JSON } - A JSON object representing the type, message, and the product
+ */
 exports.updateProductImages = async (req, res, next) => {
     try {
         const { type, message, statusCode } =
@@ -99,6 +139,15 @@ exports.updateProductImages = async (req, res, next) => {
     }
 };
 
+/**
+ * @desc      Delete Product Using It's ID Controller
+ * @param     { Object } req - Request object
+ * @param     { Object } res - Response object
+ * @param     { function } next - Next callback funtion
+ * @property  { String } req.params.productId - Product ID
+ * @property  { String } req.user._id - Seller ID
+ * @returns   { JSON } - A JSON object representing the type, message, and the product
+ */
 exports.deleteProductById = async (req, res, next) => {
     try {
         const { type, message, statusCode } =
@@ -119,6 +168,16 @@ exports.deleteProductById = async (req, res, next) => {
     }
 };
 
+/**
+ * @desc      Add Product Color Controller
+ * @param     { object } req - Request object
+ * @param     { object } res - Response object
+ * @param     { function } next - Next callback funtion
+ * @property  { String } req.params.productId - Product ID
+ * @property  { String } req.user._id - User ID
+ * @property  { String } req.body.color - Product color
+ * @returns   { JSON } - A JSON object representing the type, message and the color
+ */
 exports.addColor = async (req, res, next) => {
     try {
         const { type, message, statusCode, color } =
@@ -141,6 +200,17 @@ exports.addColor = async (req, res, next) => {
     }
 };
 
+
+/**
+ * @desc      Delete Product Color Controller
+ * @param     { object } req - Request object
+ * @param     { object } res - Response object
+ * @param     { function } next - Next callback funtion
+ * @property  { String } req.params.productId - Product ID
+ * @property  { String } req.user._id - User ID
+ * @property  { String } req.body.color - Product color
+ * @returns   { JSON } - A JSON object representing the type, message
+ */
 exports.deleteColor = async (req, res, next) => {
     try {
         const { type, message, statusCode } = await productService.deleteColor(
@@ -161,6 +231,16 @@ exports.deleteColor = async (req, res, next) => {
     }
 };
 
+/**
+ * @desc      Add Product Size Controller
+ * @param     { object } req - Request object
+ * @param     { object } res - Response object
+ * @param     { function } next - Next callback funtion
+ * @property  { String } req.params.productId - Product ID
+ * @property  { String } req.user._id - User ID
+ * @property  { String } req.body.color - Product size
+ * @returns   { JSON } - A JSON object representing the type, message and the size
+ */
 exports.addSize = async (req, res, next) => {
     try {
         const { type, message, statusCode, size } =
@@ -183,6 +263,16 @@ exports.addSize = async (req, res, next) => {
     }
 };
 
+/**
+ * @desc      Delete Product Size Controller
+ * @param     { object } req - Request object
+ * @param     { object } res - Response object
+ * @param     { function } next - Next callback funtion
+ * @property  { String } req.params.productId - Product ID
+ * @property  { String } req.user._id - User ID
+ * @property  { String } req.body.size - Product size
+ * @returns   { JSON } - A JSON object representing the type, message
+ */
 exports.deleteSize = async (req, res, next) => {
     try {
         const { type, message, statusCode } = await productService.deleteSize(
@@ -203,14 +293,21 @@ exports.deleteSize = async (req, res, next) => {
     }
 };
 
-exports.getProductStatistic = async (req, res, next) => {
+/**
+ * @desc      Delete Product Size Controller
+ * @param     { object } req - Request object
+ * @param     { object } res - Response object
+ * @param     { function } next - Next callback funtion
+ * @returns   { JSON } - A JSON object representing the type, message and the static
+ */
+exports.getProductStatics = async (req, res, next) => {
     try {
-        const statistic = await productService.getProductStatistic();
+        const static = await productService.getProductStatics();
 
         res.status(200).json({
             type: "Success",
             message: "Get statistic successfully!",
-            statistic,
+            static,
         });
     } catch (err) {
         next(err);

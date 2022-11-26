@@ -1,11 +1,24 @@
 const categoryService = require("../services/category.service");
 const CustomErrorHandler = require("../utils/CustomErrorHandler");
 
+/**
+ * @desc      Create New Category Controller
+ * @param     { object } req - Request object
+ * @param     { object } res - Response object
+ * @param     { function } next - Next callback funtion
+ * @property  { String } req.body.name - Category name
+ * @property  { String } req.body.description - Category description
+ * @property  { Object } req.file - Category image
+ * @returns   { JSON } - A JSON object representing the type, message and category
+ */
 exports.addCategory = async (req, res, next) => {
-    const { name, description } = req.body;
     try {
         const { type, message, statusCode, category } =
-            await categoryService.createCategory(name, description, req.file);
+            await categoryService.createCategory(
+                req.body.name,
+                req.body.description,
+                req.file
+            );
 
         if (type === "Error")
             return next(new CustomErrorHandler(statusCode, message));
@@ -20,11 +33,18 @@ exports.addCategory = async (req, res, next) => {
     }
 };
 
+/**
+ * @desc      Get Category Data Using It's ID Controller
+ * @param     { object } req - Request object
+ * @param     { object } res - Response object
+ * @param     { function } next - Next callback funtion
+ * @property  { String } req.params.categoryId - Category ID
+ * @returns   { JSON } - A JSON object representing the type, message and category
+ */
 exports.getCategoryById = async (req, res, next) => {
-    const { categoryId } = req.params;
     try {
         const { type, message, statusCode, category } =
-            await categoryService.getCategoryById(categoryId);
+            await categoryService.getCategoryById(req.params.categoryId);
 
         if (type === "Error")
             return next(new CustomErrorHandler(statusCode, message));
@@ -39,6 +59,14 @@ exports.getCategoryById = async (req, res, next) => {
     }
 };
 
+/**
+ * @desc      Get All Categories Data Controller
+ * @param     { object } req - Request object
+ * @param     { object } res - Response object
+ * @param     { function } next - Next callback funtion
+ * @property  { Number } req.query.limit - number of items in page
+ * @returns   { JSON } - A JSON object representing the type, message and categries
+ */
 exports.getCategories = async (req, res, next) => {
     try {
         if (!req.query.limit) req.query.limit = 10;
@@ -59,6 +87,15 @@ exports.getCategories = async (req, res, next) => {
     }
 };
 
+/**
+ * @desc      Update Category Details Controller
+ * @param     { object } req - Request object
+ * @param     { object } res - Response object
+ * @param     { function } next - Next callback funtion
+ * @property  { String } req.params.categoryId, - Category ID
+ * @property  { Object } req.body - Body object data
+ * @returns   { JSON } - A JSON object representing the type, message and category
+ */
 exports.updateCategoryDetail = async (req, res, next) => {
     try {
         const { type, message, statusCode, category } =
@@ -80,23 +117,15 @@ exports.updateCategoryDetail = async (req, res, next) => {
     }
 };
 
-exports.deleteCategory = async (req, res, next) => {
-    try {
-        const { type, message, statusCode } =
-            await categoryService.deleteCategory(req.params.categoryId);
-
-        if (type === "Error")
-            return next(new CustomErrorHandler(statusCode, message));
-
-        res.status(statusCode).json({
-            type,
-            message,
-        });
-    } catch (err) {
-        next(err);
-    }
-};
-
+/**
+ * @desc      Update Category Image Controller
+ * @param     { object } req - Request object
+ * @param     { object } res - Response object
+ * @param     { function } next - Next callback funtion
+ * @property  { String } req.params.categoryId, - Category ID
+ * @property  { Object } req.body - Body object data
+ * @returns   { JSON } - A JSON object representing the type, message and category
+ */
 exports.updateCategoryImage = async (req, res, next) => {
     try {
         const { type, message, statusCode, category } =
@@ -112,6 +141,31 @@ exports.updateCategoryImage = async (req, res, next) => {
             type,
             message,
             category,
+        });
+    } catch (err) {
+        next(err);
+    }
+};
+
+/**
+ * @desc      Delete Category Controller
+ * @param     { object } req - Request object
+ * @param     { object } res - Response object
+ * @param     { function } next - Next callback funtion
+ * @property  { String } req.params.categoryId, - Category ID
+ * @returns   { JSON } - A JSON object representing the type, message
+ */
+exports.deleteCategory = async (req, res, next) => {
+    try {
+        const { type, message, statusCode } =
+            await categoryService.deleteCategory(req.params.categoryId);
+
+        if (type === "Error")
+            return next(new CustomErrorHandler(statusCode, message));
+
+        res.status(statusCode).json({
+            type,
+            message,
         });
     } catch (err) {
         next(err);

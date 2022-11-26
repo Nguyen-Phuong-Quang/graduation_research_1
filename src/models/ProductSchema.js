@@ -50,13 +50,13 @@ const ProductSchema = new mongoose.Schema(
         },
         colors: [
             {
-                type: mongoose.Types.ObjectId,
+                type: mongoose.Schema.Types.ObjectId,
                 ref: "Color",
             },
         ],
         sizes: [
             {
-                type: mongoose.Types.ObjectId,
+                type: mongoose.Schema.Types.ObjectId,
                 ref: "Size",
             },
         ],

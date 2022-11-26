@@ -5,6 +5,9 @@ const { uploadAnyFile } = require("../utils/multer");
 const restrictedTo = require("../middlewares/restrictedTo");
 const router = express.Router();
 
+// Get product statistic
+router.get("/product-static", productController.getProductStatics);
+
 // Get product by id
 router.get("/:productId", productController.getProductById);
 
@@ -43,8 +46,5 @@ router.delete("/delete/:productId", productController.deleteProductById);
 
 // Add new product
 router.post("/add", uploadAnyFile(), productController.addProduct);
-
-// Get product statistic
-router.get("/product-statistic", productController.getProductStatistic);
 
 module.exports = router;

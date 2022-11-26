@@ -22,9 +22,9 @@ exports.getAllDiscountCodes = async (req) => {
 };
 
 exports.getDiscountCode = async (codes) => {
-    const discount = await DiscountSchema.find({ code: { $in: codes } });
+    const discounts = await DiscountSchema.find({ code: { $in: codes } });
 
-    if (!discount || discount.length === 0)
+    if (!discounts || discounts.length === 0)
         return {
             type: "Error",
             message: "No discount found!",
@@ -35,7 +35,7 @@ exports.getDiscountCode = async (codes) => {
         type: "Success",
         message: "Discount found!",
         statusCode: 200,
-        discount,
+        discounts,
     };
 };
 
