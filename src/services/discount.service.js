@@ -3,6 +3,11 @@ const DiscountSchema = require("../models/DiscountSchema");
 const UserSchema = require("../models/UserSchema");
 const apiFeatures = require("../utils/apiFeatures");
 
+/**
+ * @desc    Get all discount codes
+ * @param   { object } req - Request object
+ * @returns { object<type|message|statusCode|discounts> }
+ */
 exports.getAllDiscountCodes = async (req) => {
     const discounts = await apiFeatures(req, DiscountSchema);
 
@@ -21,6 +26,11 @@ exports.getAllDiscountCodes = async (req) => {
     };
 };
 
+/**
+ * @desc    Get Discount Code
+ * @param   { Array } codes - Discount codes
+ * @return  { object<type|message|statusCode|discounts> }
+ */
 exports.getDiscountCode = async (codes) => {
     const discounts = await DiscountSchema.find({ code: { $in: codes } });
 
@@ -39,6 +49,12 @@ exports.getDiscountCode = async (codes) => {
     };
 };
 
+/**
+ * @desc    Verfiy discount code
+ * @param   { String } discountCode - Discount code
+ * @param   { object } user - User object data
+ * @returns { object<type|message|statusCode> }
+ */
 exports.verifyDiscountCode = async (discountCode, user) => {
     if (!discountCode)
         return {
@@ -78,6 +94,11 @@ exports.verifyDiscountCode = async (discountCode, user) => {
     };
 };
 
+/**
+ * @desc    Generate Discount Code
+ * @param   { object }  body - Request body data
+ * @returns { object<type|message|statusCode|discount> }
+ */
 exports.generateDiscountCode = async (body) => {
     const {
         codeLength,
@@ -130,6 +151,11 @@ exports.generateDiscountCode = async (body) => {
     };
 };
 
+/**
+ * @desc    Delete Discount Code
+ * @param   { String } discountId - ID of discount code
+ * @return  { object<type|message|statusCode> }
+ */
 exports.deleteDiscountCode = async (discountId) => {
     const success = await DiscountSchema.findByIdAndDelete(discountId);
 
@@ -151,6 +177,12 @@ exports.deleteDiscountCode = async (discountId) => {
     };
 };
 
+/**
+ * @desc    Cancel Discount Code
+ * @param   { String } discountCode - Discount code
+ * @param   { String } userId - ID of user
+ * @return  { object<type|message|statusCode> }
+ */
 exports.cancelDiscountCode = async (discountCode, user) => {
     const discount = await DiscountSchema.findOne({ code: discountCode });
 

@@ -100,6 +100,7 @@ ProductSchema.pre("save", function (next) {
     next();
 });
 
+//  Use mongoose populate 
 ProductSchema.pre(/^find/, function (next) {
     this.populate([
         { path: "colors", select: "color" },

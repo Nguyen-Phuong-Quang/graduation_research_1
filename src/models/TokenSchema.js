@@ -13,6 +13,7 @@ const TokenSchema = new mongoose.Schema(
     }
 );
 
+// Check if token is expired
 TokenSchema.methods.isExpired = function (currentTime) {
     return moment(currentTime).unix() > moment(this.expires).unix();
 };

@@ -72,7 +72,7 @@ exports.getCategories = async (req, res, next) => {
         if (!req.query.limit) req.query.limit = 10;
 
         const { type, message, statusCode, categories } =
-            await categoryService.getCategoryByQuery(req);
+            await categoryService.getCategoriesByQuery(req);
 
         if (type === "Error")
             return next(new CustomErrorHandler(statusCode, message));

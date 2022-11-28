@@ -66,6 +66,8 @@ const OrderSchema = new mongoose.Schema(
     { timestamps: true }
 );
 
+
+// Calculate total order price automatically after save
 OrderSchema.pre("save", async function (next) {
     this.totalPrice = this.orderPrice + this.taxPrice + this.shippingPrice;
     next();

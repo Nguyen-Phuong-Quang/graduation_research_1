@@ -89,6 +89,7 @@ CartSchema.pre(/^find/, function (next) {
     next();
 });
 
+// Caculate total quantity and total price automatically after save
 CartSchema.pre("save", function (next) {
     this.totalQuantity = this.items.reduce(
         (total, item) => total + item.totalProductQuantity,

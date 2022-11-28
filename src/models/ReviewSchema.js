@@ -33,6 +33,8 @@ const ReviewSchema = new mongoose.Schema(
 
 ReviewSchema.index({ product: 1, user: 1 }, { unique: true });
 
+
+// Update product review
 ReviewSchema.statics.calculateAverageRatings = async function (productId) {
     const statistic = await this.aggregate([
         {
@@ -60,7 +62,7 @@ ReviewSchema.statics.calculateAverageRatings = async function (productId) {
     }
 };
 
-// Save
+// Auto update product review after save
 ReviewSchema.post("save", async function () {
     await this.constructor.calculateAverageRatings(this.product);
 });

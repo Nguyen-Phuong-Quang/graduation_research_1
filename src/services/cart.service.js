@@ -3,7 +3,18 @@ const ColorSchema = require("../models/ColorSchema");
 const SizeSchema = require("../models/SizeSchema");
 const ProductSchema = require("../models/ProductSchema");
 
+/**
+ * @desc    Add Product To Cart
+ * @param   { String } email - User email address
+ * @param   { String } productId - Product ID
+ * @param   { Number } quantity - Product quantity
+ * @param   { String } color - Color
+ * @param   { String } size - Size
+ * @returns { object<type|message|statusCode|cart> }
+ */
 exports.addItemToCart = async (email, productId, quantity, color, size) => {
+
+    // 1. Check quantity must be greater than zero
     if (quantity <= 0)
         return {
             type: "Error",
@@ -13,6 +24,7 @@ exports.addItemToCart = async (email, productId, quantity, color, size) => {
 
     const product = await ProductSchema.findById(productId);
 
+    // 2. Check if product doesn't exist
     if (!product)
         return {
             type: "Error",
@@ -27,6 +39,8 @@ exports.addItemToCart = async (email, productId, quantity, color, size) => {
     const colorCheck = product.colors.find(
         (cl) => cl.color.toString() === color.toString()
     );
+
+    // 3. Check if color doesn't exist
     if (!colorCheck)
         return {
             type: "Error",
@@ -37,6 +51,8 @@ exports.addItemToCart = async (email, productId, quantity, color, size) => {
     const sizeCheck = product.sizes.find(
         (sz) => sz.size.toString() === size.toString()
     );
+
+    // 3. Check if size doesn't exist
     if (!sizeCheck)
         return {
             type: "Error",
@@ -68,7 +84,7 @@ exports.addItemToCart = async (email, productId, quantity, color, size) => {
             cart: newCart,
         };
     }
-
+    
     const indexFound = cart.items.findIndex(
         (item) =>
             item.product._id.toString() === productId.toString() &&
@@ -100,9 +116,15 @@ exports.addItemToCart = async (email, productId, quantity, color, size) => {
     };
 };
 
+/**
+ * @desc    Get Cart
+ * @param   { String } email - User email address
+ * @returns { object<type|message|statusCode|cart> }
+ */
 exports.getCart = async (email) => {
     const cart = await CartSchema.findOne({ email });
 
+    // Check cart if not exist
     if (!cart)
         return {
             type: "Error",
@@ -117,10 +139,15 @@ exports.getCart = async (email) => {
         cart,
     };
 };
-
+/**
+ * @desc    Delete Cart
+ * @param   { String } email - User email address
+ * @return  { object<type|message|statusCode> }
+ */
 exports.deleteCart = async (email) => {
     const { deletedCount } = await CartSchema.deleteOne({ email });
 
+    // Check no cart found!
     if (deletedCount === 0)
         return {
             type: "Error",
@@ -135,9 +162,18 @@ exports.deleteCart = async (email) => {
     };
 };
 
+/**
+ * @desc    Delete Cart Item
+ * @param   { String } email - User email address
+ * @param   { String } productId - Product ID
+ * @param   { String } Color - Color
+ * @param   { String } Size - Size
+ * @returns { object<type|message|statusCode|cart> }
+ */
 exports.deleteItem = async (email, productId, color, size) => {
     const cart = await CartSchema.findOne({ email });
 
+    // 1. Check cart if not exist
     if (!cart)
         return {
             type: "Error",
@@ -147,6 +183,7 @@ exports.deleteItem = async (email, productId, color, size) => {
 
     const colorDoc = await ColorSchema.isExisted(productId, color);
 
+    // 2. Check product color not exist
     if (!colorDoc)
         return {
             type: "Error",
@@ -156,6 +193,7 @@ exports.deleteItem = async (email, productId, color, size) => {
 
     const sizeDoc = await SizeSchema.isExisted(productId, size);
 
+    // 3. Check product size not exist
     if (!sizeDoc)
         return {
             type: "Error",
@@ -163,6 +201,7 @@ exports.deleteItem = async (email, productId, color, size) => {
             statusCode: 404,
         };
 
+    // 4. Find product that match color and size
     const product = cart.items.find((item) => {
         return (
             item.product._id.toString() === productId.toString() &&
@@ -171,6 +210,7 @@ exports.deleteItem = async (email, productId, color, size) => {
         );
     });
 
+    // 5. Check product if not exist in cart
     if (!product)
         return {
             type: "Error",
@@ -178,6 +218,7 @@ exports.deleteItem = async (email, productId, color, size) => {
             statusCode: 404,
         };
 
+    // 6. Update cart (delete item)
     const newCart = await cart.updateOne({
         $pull: {
             items: {
@@ -198,9 +239,18 @@ exports.deleteItem = async (email, productId, color, size) => {
     };
 };
 
+/**
+ * @desc    Increase Product Quantity By One
+ * @param   { String } email - User email address
+ * @param   { String } productId - Product ID
+ * @param   { String } Color - Color
+ * @param   { String } Size - Size
+ * @returns { object<type|message|statusCode> }
+ */
 exports.increaseOne = async (email, productId, color, size) => {
     const cart = await CartSchema.findOne({ email });
 
+    // 1. Check cart if not exist
     if (!cart)
         return {
             type: "Error",
@@ -210,6 +260,7 @@ exports.increaseOne = async (email, productId, color, size) => {
 
     const product = await ProductSchema.findById(productId);
 
+    // 2. Check product if not exist
     if (!product)
         return {
             type: "Error",
@@ -219,6 +270,7 @@ exports.increaseOne = async (email, productId, color, size) => {
 
     const colorDoc = await ColorSchema.isExisted(productId, color);
 
+    // 3. Check product color if not exist in cart
     if (!colorDoc)
         return {
             type: "Error",
@@ -228,6 +280,7 @@ exports.increaseOne = async (email, productId, color, size) => {
 
     const sizeDoc = await SizeSchema.isExisted(productId, size);
 
+    // 4. Check product size if not exist in cart
     if (!sizeDoc)
         return {
             type: "Error",
@@ -235,6 +288,7 @@ exports.increaseOne = async (email, productId, color, size) => {
             statusCode: 404,
         };
 
+    // 5. Find product index in cart that match id, color and size
     const indexProductExistedInCart = cart.items.findIndex((item) => {
         return (
             item.product._id.toString() === productId.toString() &&
@@ -243,6 +297,7 @@ exports.increaseOne = async (email, productId, color, size) => {
         );
     });
 
+    // 6. If product found incart
     if (indexProductExistedInCart !== -1) {
         cart.items[indexProductExistedInCart].totalProductQuantity += 1;
         cart.items[indexProductExistedInCart].totalProductPrice +=
@@ -264,9 +319,18 @@ exports.increaseOne = async (email, productId, color, size) => {
     };
 };
 
+/**
+ * @desc    Decrease Product Quantity By One
+ * @param   { String } email - User email address
+ * @param   { String } productId - Product ID
+ * @param   { String } Color - Color
+ * @param   { String } Size - Size
+ * @returns { object<type|message|statusCode> }
+ */
 exports.decreaseOne = async (email, productId, color, size) => {
     const cart = await CartSchema.findOne({ email });
 
+    // 1. Check cart if not exist
     if (!cart)
         return {
             type: "Error",
@@ -276,15 +340,17 @@ exports.decreaseOne = async (email, productId, color, size) => {
 
     const product = await ProductSchema.findById(productId);
 
+    // 2. Check product if not exist
     if (!product)
         return {
             type: "Error",
-            message: "No found found!",
+            message: "No product found!",
             statusCode: 404,
         };
 
     const colorDoc = await ColorSchema.isExisted(productId, color);
 
+    // 3. Check product color if not exist in cart
     if (!colorDoc)
         return {
             type: "Error",
@@ -294,6 +360,7 @@ exports.decreaseOne = async (email, productId, color, size) => {
 
     const sizeDoc = await SizeSchema.isExisted(productId, size);
 
+    // 4. Check product size if not exist in cart
     if (!sizeDoc)
         return {
             type: "Error",

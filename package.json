@@ -2,7 +2,7 @@
     "name": "ecommerce-management",
     "version": "1.0.0",
     "main": "src/server.js",
-    "repository": "https://github.com/PhuongKwang/hotel-management.git",
+    "repository": "https://github.com/PhuongKwang/graduation_research_1.git",
     "license": "MIT",
     "scripts": {
         "start": "nodemon src/server.js"
