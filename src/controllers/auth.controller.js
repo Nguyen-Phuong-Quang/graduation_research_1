@@ -1,6 +1,6 @@
 const authService = require("../services/auth.service");
 const CustomErrorHandler = require("../utils/CustomErrorHandler");
-
+const statusType = require("../constants/statusType");
 /**
  * @desc      Sign Up Controller
  * @param     { object } req - Request object
@@ -20,7 +20,7 @@ exports.register = async (req, res, next) => {
         );
 
         // Check error response
-        if (type === "Error") {
+        if (type === statusType.error) {
             return next(new CustomErrorHandler(statusCode, message));
         }
 
@@ -52,11 +52,11 @@ exports.verifyEmail = async (req, res, next) => {
             req.body.email
         );
 
-        if (type === "Error")
+        if (type === statusType.error)
             return next(new CustomErrorHandler(statusCode, message));
 
         res.status(statusCode).json({
-            type: "Success",
+            type,
             message,
         });
     } catch (err) {
@@ -83,7 +83,7 @@ exports.signin = async (req, res, next) => {
             password
         );
 
-        if (type === "Error")
+        if (type === statusType.error)
             return next(new CustomErrorHandler(statusCode, message));
 
         res.status(statusCode).json({
@@ -111,7 +111,7 @@ exports.refreshToken = async (req, res, next) => {
         const { type, message, statusCode, newTokens } =
             await authService.refreshToken(refreshToken);
 
-        if (type === "Error")
+        if (type === statusType.error)
             return next(new CustomErrorHandler(statusCode, message));
 
         res.status(statusCode).json({
@@ -134,14 +134,13 @@ exports.refreshToken = async (req, res, next) => {
  * User get the verify code via sign up email
  */
 exports.forgetPassword = async (req, res, next) => {
-    const { email } = req.body;
     try {
         // Call forget password service
         const { type, message, statusCode } = await authService.forgetPassword(
-            email
+            req.body.email
         );
 
-        if (type === "Error")
+        if (type === statusType.error)
             return next(new CustomErrorHandler(statusCode, message));
 
         res.status(statusCode).json({
@@ -175,7 +174,7 @@ exports.resetPassword = async (req, res, next) => {
             confirmPassword
         );
 
-        if (type === "Error")
+        if (type === statusType.error)
             return next(new CustomErrorHandler(statusCode, message));
 
         res.status(statusCode).json({
@@ -209,7 +208,7 @@ exports.changePassword = async (req, res, next) => {
             req.user._id
         );
 
-        if (type === "Error")
+        if (type === statusType.error)
             return next(new CustomErrorHandler(statusCode, message));
 
         res.status(statusCode).json({
@@ -232,9 +231,11 @@ exports.changePassword = async (req, res, next) => {
 exports.signout = async (req, res, next) => {
     try {
         // Call sign out service
-        const { type, statusCode, message } = await authService.signout(req.user._id);
+        const { type, statusCode, message } = await authService.signout(
+            req.user._id
+        );
 
-        if (type === "Error")
+        if (type === statusType.error)
             return next(new CustomErrorHandler(statusCode, message));
 
         res.status(statusCode).json({

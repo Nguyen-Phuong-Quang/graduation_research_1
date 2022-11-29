@@ -2,6 +2,7 @@ const CartSchema = require("../models/CartSchema");
 const ColorSchema = require("../models/ColorSchema");
 const SizeSchema = require("../models/SizeSchema");
 const ProductSchema = require("../models/ProductSchema");
+const statusType = require("../constants/statusType");
 
 /**
  * @desc    Add Product To Cart
@@ -13,11 +14,10 @@ const ProductSchema = require("../models/ProductSchema");
  * @returns { object<type|message|statusCode|cart> }
  */
 exports.addItemToCart = async (email, productId, quantity, color, size) => {
-
     // 1. Check quantity must be greater than zero
     if (quantity <= 0)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "Quantity must be greater than zero!",
             statusCode: 400,
         };
@@ -27,7 +27,7 @@ exports.addItemToCart = async (email, productId, quantity, color, size) => {
     // 2. Check if product doesn't exist
     if (!product)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "No product found!",
             statusCode: 404,
         };
@@ -43,7 +43,7 @@ exports.addItemToCart = async (email, productId, quantity, color, size) => {
     // 3. Check if color doesn't exist
     if (!colorCheck)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "This product does not have this color!",
             statusCode: 400,
         };
@@ -55,7 +55,7 @@ exports.addItemToCart = async (email, productId, quantity, color, size) => {
     // 3. Check if size doesn't exist
     if (!sizeCheck)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "This product does not have this size!",
             statusCode: 400,
         };
@@ -78,13 +78,13 @@ exports.addItemToCart = async (email, productId, quantity, color, size) => {
         const newCart = await CartSchema.create(cartData);
 
         return {
-            type: "Success",
+            type: statusType.success,
             message: "Create new cart and add item successfully!",
             statusCode: 200,
             cart: newCart,
         };
     }
-    
+
     const indexFound = cart.items.findIndex(
         (item) =>
             item.product._id.toString() === productId.toString() &&
@@ -95,7 +95,8 @@ exports.addItemToCart = async (email, productId, quantity, color, size) => {
     // If this product not exist in this cart
     if (indexFound !== -1) {
         cart.items[indexFound].totalProductQuantity += quantity;
-        cart.items[indexFound].totalProductPrice += priceAfterDiscount * quantity;
+        cart.items[indexFound].totalProductPrice +=
+            priceAfterDiscount * quantity;
     } else {
         cart.items.push({
             product: productId,
@@ -109,7 +110,7 @@ exports.addItemToCart = async (email, productId, quantity, color, size) => {
     await cart.save();
 
     return {
-        type: "Success",
+        type: statusType.success,
         message: "Add item to cart successfully!",
         statusCode: 200,
         cart,
@@ -127,13 +128,13 @@ exports.getCart = async (email) => {
     // Check cart if not exist
     if (!cart)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "No cart found!",
             statusCode: 404,
         };
 
     return {
-        type: "Success",
+        type: statusType.success,
         message: "Cart found!",
         statusCode: 200,
         cart,
@@ -150,13 +151,13 @@ exports.deleteCart = async (email) => {
     // Check no cart found!
     if (deletedCount === 0)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "No cart found!",
             statusCode: 404,
         };
 
     return {
-        type: "Error",
+        type: statusType.error,
         message: "Delete cart successfully!",
         statusCode: 200,
     };
@@ -176,7 +177,7 @@ exports.deleteItem = async (email, productId, color, size) => {
     // 1. Check cart if not exist
     if (!cart)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "No cart found!",
             statusCode: 404,
         };
@@ -186,7 +187,7 @@ exports.deleteItem = async (email, productId, color, size) => {
     // 2. Check product color not exist
     if (!colorDoc)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "This color does not exist!",
             statusCode: 404,
         };
@@ -196,7 +197,7 @@ exports.deleteItem = async (email, productId, color, size) => {
     // 3. Check product size not exist
     if (!sizeDoc)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "This size does not exist!",
             statusCode: 404,
         };
@@ -213,7 +214,7 @@ exports.deleteItem = async (email, productId, color, size) => {
     // 5. Check product if not exist in cart
     if (!product)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "This product does not exist in your cart!",
             statusCode: 404,
         };
@@ -232,7 +233,7 @@ exports.deleteItem = async (email, productId, color, size) => {
     });
 
     return {
-        type: "Success",
+        type: statusType.success,
         message: "Remove item successfully!",
         statusCode: 200,
         cart: newCart,
@@ -253,7 +254,7 @@ exports.increaseOne = async (email, productId, color, size) => {
     // 1. Check cart if not exist
     if (!cart)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "No cart found for user!",
             statusCode: 404,
         };
@@ -263,7 +264,7 @@ exports.increaseOne = async (email, productId, color, size) => {
     // 2. Check product if not exist
     if (!product)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "No found found!",
             statusCode: 404,
         };
@@ -273,7 +274,7 @@ exports.increaseOne = async (email, productId, color, size) => {
     // 3. Check product color if not exist in cart
     if (!colorDoc)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "This color does not exist!",
             statusCode: 404,
         };
@@ -283,7 +284,7 @@ exports.increaseOne = async (email, productId, color, size) => {
     // 4. Check product size if not exist in cart
     if (!sizeDoc)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "This size does not exist!",
             statusCode: 404,
         };
@@ -305,7 +306,7 @@ exports.increaseOne = async (email, productId, color, size) => {
         await cart.save();
 
         return {
-            type: "Success",
+            type: statusType.success,
             message: `Increate item ${product.name} by one successfully!`,
             statusCode: 200,
             cart,
@@ -313,7 +314,7 @@ exports.increaseOne = async (email, productId, color, size) => {
     }
 
     return {
-        type: "Error",
+        type: statusType.error,
         message: `No item found in cart!`,
         statusCode: 404,
     };
@@ -333,7 +334,7 @@ exports.decreaseOne = async (email, productId, color, size) => {
     // 1. Check cart if not exist
     if (!cart)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "No cart found for user!",
             statusCode: 404,
         };
@@ -343,7 +344,7 @@ exports.decreaseOne = async (email, productId, color, size) => {
     // 2. Check product if not exist
     if (!product)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "No product found!",
             statusCode: 404,
         };
@@ -353,7 +354,7 @@ exports.decreaseOne = async (email, productId, color, size) => {
     // 3. Check product color if not exist in cart
     if (!colorDoc)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "This color does not exist!",
             statusCode: 404,
         };
@@ -363,7 +364,7 @@ exports.decreaseOne = async (email, productId, color, size) => {
     // 4. Check product size if not exist in cart
     if (!sizeDoc)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "This size does not exist!",
             statusCode: 404,
         };
@@ -395,7 +396,7 @@ exports.decreaseOne = async (email, productId, color, size) => {
         await cart.save();
 
         return {
-            type: "Success",
+            type: statusType.success,
             message: `Decrease item ${product.name} by one successfully!`,
             statusCode: 200,
             cart,
@@ -403,7 +404,7 @@ exports.decreaseOne = async (email, productId, color, size) => {
     }
 
     return {
-        type: "Error",
+        type: statusType.error,
         message: `No item found in cart!`,
         statusCode: 404,
     };

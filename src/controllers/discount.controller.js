@@ -1,6 +1,6 @@
 const discountService = require("../services/discount.service");
 const CustomErrorHandler = require("../utils/CustomErrorHandler");
-
+const statusType = require("../constants/statusType");
 /**
  * @desc      Get Discount Codes Controller
  * @param     { object } req - Request object
@@ -13,7 +13,7 @@ exports.getAllDiscountCodes = async (req, res, next) => {
         const { type, message, statusCode, discounts } =
             await discountService.getAllDiscountCodes(req);
 
-        if (type === "Error")
+        if (type === statusType.error)
             return next(new CustomErrorHandler(statusCode, message));
 
         res.status(statusCode).json({
@@ -39,7 +39,7 @@ exports.getDiscountCode = async (req, res, next) => {
         const { type, message, statusCode, discounts } =
             await discountService.getDiscountCode(req.user.discountCodes);
 
-        if (type === "Error")
+        if (type === statusType.error)
             return next(new CustomErrorHandler(statusCode, message));
 
         res.status(statusCode).json({
@@ -68,7 +68,7 @@ exports.verifyDiscountCode = async (req, res, next) => {
                 req.user
             );
 
-        if (type === "Error")
+        if (type === statusType.error)
             return next(new CustomErrorHandler(statusCode, message));
 
         res.status(statusCode).json({
@@ -93,7 +93,7 @@ exports.generateDiscountCode = async (req, res, next) => {
         const { type, message, statusCode, discount } =
             await discountService.generateDiscountCode(req.body);
 
-        if (type === "Error")
+        if (type === statusType.error)
             return next(new CustomErrorHandler(statusCode, message));
 
         res.status(statusCode).json({
@@ -119,7 +119,7 @@ exports.deleteDiscountCode = async (req, res, next) => {
         const { type, message, statusCode } =
             await discountService.deleteDiscountCode(req.params.discountId);
 
-        if (type === "Error")
+        if (type === statusType.error)
             return next(new CustomErrorHandler(statusCode, message));
 
         res.status(statusCode).json({
@@ -147,7 +147,7 @@ exports.cancelDiscountCode = async (req, res, next) => {
                 req.user
             );
 
-        if (type === "Error")
+        if (type === statusType.error)
             return next(new CustomErrorHandler(statusCode, message));
 
         res.status(statusCode).json({

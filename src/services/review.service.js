@@ -1,13 +1,14 @@
 const ProductSchema = require("../models/ProductSchema");
 const ReviewSchema = require("../models/ReviewSchema");
 const apiFeature = require("../utils/apiFeatures");
+const statusType = require("../constants/statusType");
 
 exports.addReview = async (productId, userId, body) => {
     const product = await ProductSchema.findById(productId);
 
     if (!product)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "Product not found!",
             statusCode: 404,
         };
@@ -16,20 +17,20 @@ exports.addReview = async (productId, userId, body) => {
 
     if (!review || !rating)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "Missing field!",
             statusCode: 400,
         };
 
     if (rating < 1)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "Rating must greater than or equal to 1",
         };
 
     if (rating > 5)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "Rating must less than or equal to 5",
         };
 
@@ -40,7 +41,7 @@ exports.addReview = async (productId, userId, body) => {
 
     if (isExited.length !== 0)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "Only one review allowed!",
             statusCode: 400,
         };
@@ -53,7 +54,7 @@ exports.addReview = async (productId, userId, body) => {
     });
 
     return {
-        type: "Success",
+        type: statusType.success,
         message: "Create review successfully!",
         statusCode: 200,
         review: newReview,
@@ -68,27 +69,27 @@ exports.updateReview = async (userId, productId, reviewId, body) => {
 
     if (!review)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "Review not found!",
             statusCode: 404,
         };
 
     if (userId.toString() !== review.user.toString())
         return {
-            type: "Error",
+            type: statusType.error,
             message: "You don't have permission to edit this comment!",
             statusCode: 404,
         };
 
     if (body.rating < 1)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "Rating must greater than or equal to 1",
         };
 
     if (body.rating > 5)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "Rating must less than or equal to 5",
         };
 
@@ -100,7 +101,7 @@ exports.updateReview = async (userId, productId, reviewId, body) => {
     await ReviewSchema.calculateAverageRatings(updateReview.product);
 
     return {
-        type: "Success",
+        type: statusType.success,
         message: "Update review successfully!",
         statusCode: 200,
         review: updateReview,
@@ -115,14 +116,14 @@ exports.deleteReview = async (userId, productId, reviewId) => {
 
     if (!review)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "Review not found!",
             statusCode: 404,
         };
 
     if (userId.toString() !== review.user.toString())
         return {
-            type: "Error",
+            type: statusType.error,
             message: "You don't have permission to delete this comment!",
             statusCode: 404,
         };
@@ -131,7 +132,7 @@ exports.deleteReview = async (userId, productId, reviewId) => {
     await ReviewSchema.calculateAverageRatings(review.product);
 
     return {
-        type: "Success",
+        type: statusType.success,
         message: "Delete review successfully!",
         statusCode: 200,
     };
@@ -145,13 +146,13 @@ exports.getReviewById = async (productId, reviewId) => {
 
     if (!review)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "Review not found!",
             statusCode: 404,
         };
 
     return {
-        type: "Success",
+        type: statusType.success,
         message: "Get review successfully!",
         statusCode: 200,
         review,
@@ -163,7 +164,7 @@ exports.getAllReviews = async (req) => {
 
     if (!product)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "Product not found!",
             statusCode: 404,
         };
@@ -172,7 +173,7 @@ exports.getAllReviews = async (req) => {
 
     if (reviews.length === 0)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "No review found!",
             statusCode: 404,
         };
@@ -183,7 +184,7 @@ exports.getAllReviews = async (req) => {
     );
 
     return {
-        type: "Success",
+        type: statusType.success,
         message: "Reviews found!",
         statusCode: 200,
         reviews,

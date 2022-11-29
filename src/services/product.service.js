@@ -6,19 +6,20 @@ const {
     destroyFileCloudinary,
 } = require("../utils/cloudinary");
 const apiFeatures = require("../utils/apiFeatures");
+const statusType = require("../constants/statusType");
 
 exports.getProductById = async (productId) => {
     const product = await ProductSchema.findById(productId).lean();
 
     if (!product)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "No product found!",
             statusCode: 404,
         };
 
     return {
-        type: "Success",
+        type: statusType.success,
         message: "Found!",
         statusCode: 200,
         product,
@@ -41,13 +42,13 @@ exports.getAllProductsByQuery = async (req) => {
 
     if (products.length < 1)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "No product found!",
             statusCode: 404,
         };
 
     return {
-        type: "Success",
+        type: statusType.success,
         message: "Found!",
         statusCode: 200,
         products,
@@ -81,7 +82,7 @@ exports.createProduct = async (body, files, seller) => {
         images.length === 0
     )
         return {
-            type: "Error",
+            type: statusType.error,
             message: "Missing field!",
             statusCode: 400,
         };
@@ -171,7 +172,7 @@ exports.createProduct = async (body, files, seller) => {
     await newProduct.save();
 
     return {
-        type: "Success",
+        type: statusType.success,
         message: "Add product successfully!",
         statusCode: 200,
         product: newProduct,
@@ -183,14 +184,14 @@ exports.updateProductDetail = async (productId, sellerId, body) => {
 
     if (!product)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "No product found!",
             statusCode: 404,
         };
 
     if (sellerId.toString() !== product.seller.toString())
         return {
-            type: "Error",
+            type: statusType.error,
             message: "This is not your product!",
             statusCode: 403,
         };
@@ -201,7 +202,7 @@ exports.updateProductDetail = async (productId, sellerId, body) => {
     });
 
     return {
-        type: "Success",
+        type: statusType.success,
         message: "Update product detail successfully!",
         statusCode: 200,
         product: newProduct,
@@ -211,7 +212,7 @@ exports.updateProductDetail = async (productId, sellerId, body) => {
 exports.updateProductImages = async (productId, sellerId, images) => {
     if (images.length === 0)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "Select images!",
             statusCode: 400,
         };
@@ -220,14 +221,14 @@ exports.updateProductImages = async (productId, sellerId, images) => {
 
     if (!product)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "No product found!",
             statusCode: 404,
         };
 
     if (sellerId.toString() !== product.seller.toString())
         return {
-            type: "Error",
+            type: statusType.error,
             message: "This is not your product!",
             statusCode: 403,
         };
@@ -276,7 +277,7 @@ exports.updateProductImages = async (productId, sellerId, images) => {
     });
 
     return {
-        type: "Success",
+        type: statusType.success,
         message: "Update image successfully!",
         statusCode: 200,
     };
@@ -287,14 +288,14 @@ exports.deleteProductById = async (productId, sellerId) => {
 
     if (!product)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "No product found!",
             statusCode: 404,
         };
 
     if (sellerId.toString() !== product.seller.toString())
         return {
-            type: "Error",
+            type: statusType.error,
             message: "This is not your product!",
             statusCode: 403,
         };
@@ -324,7 +325,7 @@ exports.deleteProductById = async (productId, sellerId) => {
     await ProductSchema.findByIdAndDelete(productId);
 
     return {
-        type: "Success",
+        type: statusType.success,
         message: "Delete product successfully!",
         statusCode: 200,
     };
@@ -335,21 +336,21 @@ exports.addColor = async (productId, seller, color) => {
 
     if (!product)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "No product found!",
             statusCode: 404,
         };
 
     if (seller.toString() !== product.seller.toString())
         return {
-            type: "Error",
+            type: statusType.error,
             message: "This is not your product!",
             statusCode: 403,
         };
 
     if (await ColorSchema.isExisted(productId, color.toLowerCase()))
         return {
-            type: "Error",
+            type: statusType.error,
             message: "Color exists!",
             statusCode: 401,
         };
@@ -361,7 +362,7 @@ exports.addColor = async (productId, seller, color) => {
     await product.save();
 
     return {
-        type: "Success",
+        type: statusType.success,
         message: "Add color successfully!",
         statusCode: 200,
         color: newColor,
@@ -373,14 +374,14 @@ exports.deleteColor = async (productId, seller, color) => {
 
     if (!product)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "No product found!",
             statusCode: 404,
         };
 
     if (seller.toString() !== product.seller.toString())
         return {
-            type: "Error",
+            type: statusType.error,
             message: "This is not your product!",
             statusCode: 403,
         };
@@ -388,7 +389,7 @@ exports.deleteColor = async (productId, seller, color) => {
     const colorDoc = await ColorSchema.isExisted(productId, color);
     if (!colorDoc)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "No color found!",
             statusCode: 404,
         };
@@ -402,7 +403,7 @@ exports.deleteColor = async (productId, seller, color) => {
     await product.save();
 
     return {
-        type: "Success",
+        type: statusType.success,
         message: "Delete color successfully!",
         statusCode: 200,
     };
@@ -413,21 +414,21 @@ exports.addSize = async (productId, seller, size) => {
 
     if (!product)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "No product found!",
             statusCode: 404,
         };
 
     if (seller.toString() !== product.seller.toString())
         return {
-            type: "Error",
+            type: statusType.error,
             message: "This is not your product!",
             statusCode: 403,
         };
 
     if (await SizeSchema.isExisted(productId, size.toLowerCase()))
         return {
-            type: "Error",
+            type: statusType.error,
             message: "Size exists!",
             statusCode: 401,
         };
@@ -439,7 +440,7 @@ exports.addSize = async (productId, seller, size) => {
     await product.save();
 
     return {
-        type: "Success",
+        type: statusType.success,
         message: "Add size successfully!",
         statusCode: 200,
         size: newSize,
@@ -451,14 +452,14 @@ exports.deleteSize = async (productId, seller, size) => {
 
     if (!product)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "No product found!",
             statusCode: 404,
         };
 
     if (seller.toString() !== product.seller.toString())
         return {
-            type: "Error",
+            type: statusType.error,
             message: "This is not your product!",
             statusCode: 403,
         };
@@ -466,7 +467,7 @@ exports.deleteSize = async (productId, seller, size) => {
     const sizeDoc = await SizeSchema.isExisted(productId, size);
     if (!sizeDoc)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "No size found!",
             statusCode: 404,
         };
@@ -480,7 +481,7 @@ exports.deleteSize = async (productId, seller, size) => {
     await product.save();
 
     return {
-        type: "Success",
+        type: statusType.success,
         message: "Delete cosizelor successfully!",
         statusCode: 200,
     };
@@ -517,7 +518,7 @@ exports.getProductStatics = async () => {
         {
             $project: {
                 _id: 0,
-                "Category": {
+                Category: {
                     name: 1,
                 },
                 Quantity: 1,

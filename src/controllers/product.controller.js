@@ -1,12 +1,13 @@
 const productService = require("../services/product.service");
 const CustomErrorHandler = require("../utils/CustomErrorHandler");
+const statusType = require("../constants/statusType");
 
 exports.getProductById = async (req, res, next) => {
     try {
         const { type, message, statusCode, product } =
             await productService.getProductById(req.params.productId);
 
-        if (type === "Error")
+        if (type === statusType.error)
             return next(new CustomErrorHandler(statusCode, message));
 
         res.status(statusCode).json({
@@ -31,7 +32,7 @@ exports.getAllProducts = async (req, res, next) => {
         const { type, message, statusCode, products } =
             await productService.getAllProductsByQuery(req);
 
-        if (type === "Error")
+        if (type === statusType.error)
             return next(new CustomErrorHandler(statusCode, message));
 
         res.status(statusCode).json({
@@ -63,7 +64,7 @@ exports.addProduct = async (req, res, next) => {
                 req.user._id
             );
 
-        if (type === "Error")
+        if (type === statusType.error)
             return next(new CustomErrorHandler(statusCode, message));
 
         res.status(statusCode).json({
@@ -95,7 +96,7 @@ exports.updateProductDetail = async (req, res, next) => {
                 req.body
             );
 
-        if (type === "Error")
+        if (type === statusType.error)
             return next(new CustomErrorHandler(statusCode, message));
 
         res.status(statusCode).json({
@@ -127,7 +128,7 @@ exports.updateProductImages = async (req, res, next) => {
                 req.files
             );
 
-        if (type === "Error")
+        if (type === statusType.error)
             return next(new CustomErrorHandler(statusCode, message));
 
         res.status(statusCode).json({
@@ -156,7 +157,7 @@ exports.deleteProductById = async (req, res, next) => {
                 req.user._id
             );
 
-        if (type === "Error")
+        if (type === statusType.error)
             return next(new CustomErrorHandler(statusCode, message));
 
         res.status(statusCode).json({
@@ -187,7 +188,7 @@ exports.addColor = async (req, res, next) => {
                 req.body.color
             );
 
-        if (type === "Error")
+        if (type === statusType.error)
             return next(new CustomErrorHandler(statusCode, message));
 
         res.status(statusCode).json({
@@ -199,7 +200,6 @@ exports.addColor = async (req, res, next) => {
         next(err);
     }
 };
-
 
 /**
  * @desc      Delete Product Color Controller
@@ -219,7 +219,7 @@ exports.deleteColor = async (req, res, next) => {
             req.body.color
         );
 
-        if (type === "Error")
+        if (type === statusType.error)
             return next(new CustomErrorHandler(statusCode, message));
 
         res.status(statusCode).json({
@@ -250,7 +250,7 @@ exports.addSize = async (req, res, next) => {
                 req.body.size
             );
 
-        if (type === "Error")
+        if (type === statusType.error)
             return next(new CustomErrorHandler(statusCode, message));
 
         res.status(statusCode).json({
@@ -281,7 +281,7 @@ exports.deleteSize = async (req, res, next) => {
             req.body.size
         );
 
-        if (type === "Error")
+        if (type === statusType.error)
             return next(new CustomErrorHandler(statusCode, message));
 
         res.status(statusCode).json({

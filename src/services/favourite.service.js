@@ -1,5 +1,6 @@
 const FavouriteSchema = require("../models/FavouriteSchema");
 const ProductSchema = require("../models/ProductSchema");
+const statusType = require("../constants/statusType");
 
 /**
  * @desc    Add product to favorite list service
@@ -13,7 +14,7 @@ exports.addToFavourite = async (userId, productId) => {
     // 1. Check product if not exist
     if (!product)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "No product found!",
             statusCode: 404,
         };
@@ -29,7 +30,7 @@ exports.addToFavourite = async (userId, productId) => {
     } else {
         if (favourite.products.includes(productId))
             return {
-                type: "Error",
+                type: statusType.error,
                 message: "Product is existed in favourite list!",
                 statusCode: 400,
             };
@@ -40,7 +41,7 @@ exports.addToFavourite = async (userId, productId) => {
     }
 
     return {
-        type: "Success",
+        type: statusType.success,
         message: "Add product to favourite list successfully!",
         statusCode: 200,
     };
@@ -58,7 +59,7 @@ exports.deleteProductFromFavourite = async (userId, productId) => {
     // 1. Check favourite list if not exist
     if (!favourite)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "No favourite list found!",
             statusCode: 404,
         };
@@ -66,7 +67,7 @@ exports.deleteProductFromFavourite = async (userId, productId) => {
     // 2. Check if favourite list does not have this product
     if (!favourite.products.includes(productId))
         return {
-            type: "Error",
+            type: statusType.error,
             message: "This product is not in favourite list!",
             statusCode: 404,
         };
@@ -75,7 +76,7 @@ exports.deleteProductFromFavourite = async (userId, productId) => {
     await favourite.update({ $pull: { products: productId } });
 
     return {
-        type: "Success",
+        type: statusType.success,
         message: "Remove product from favourite list successfully!",
         statusCode: 200,
     };
@@ -92,16 +93,16 @@ exports.getFavouriteList = async (userId) => {
     // 1. Check if no favourite list found or no product in list
     if (!favourite || favourite.products.length === 0)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "Favourite list is empty!",
             statusCode: 404,
         };
 
     return {
-        type: "Success",
+        type: statusType.success,
         message: "Favourite list found!",
         statusCode: 200,
-        favourite
+        favourite,
     };
 };
 
@@ -120,13 +121,13 @@ exports.checkProductInFavouriteList = async (userId, productId) => {
     // Check favourite list if not exist
     if (!favourite)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "No product in favourite list found!",
             statusCode: 404,
         };
 
     return {
-        type: "Success",
+        type: statusType.success,
         message: "Product in favourite list found!",
         statusCode: 200,
     };

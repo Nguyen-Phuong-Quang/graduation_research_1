@@ -4,6 +4,7 @@ const {
     uploadFileCloudinary,
     destroyFileCloudinary,
 } = require("../utils/cloudinary");
+const statusType = require("../constants/statusType");
 
 /**
  * @desc    Create New Category
@@ -16,7 +17,7 @@ exports.createCategory = async (name, description, imageFile) => {
     // 1. Check if messing field
     if (!name || !description || !imageFile)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "Missing field!",
             statusCode: 400,
         };
@@ -39,7 +40,7 @@ exports.createCategory = async (name, description, imageFile) => {
     });
 
     return {
-        type: "Success",
+        type: statusType.success,
         message: "Create category successfully!",
         statusCode: 200,
         category,
@@ -57,13 +58,13 @@ exports.getCategoryById = async (categoryId) => {
     // Check catgory if not exist
     if (!category)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "No category found!",
             statusCode: 404,
         };
 
     return {
-        type: "Success",
+        type: statusType.success,
         message: "Category found!",
         statusCode: 200,
         category,
@@ -81,13 +82,13 @@ exports.getCategoriesByQuery = async (req) => {
     // Checck if no category found
     if (!categories || categories.length === 0)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "No category found!",
             statusCode: 404,
         };
 
     return {
-        type: "Success",
+        type: statusType.success,
         message: "Category found!",
         statusCode: 200,
         categories,
@@ -106,7 +107,7 @@ exports.updateCategoryDetail = async (categoryId, body) => {
     // 1. Check category if not exist
     if (!category)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "No category found!",
             statusCode: 404,
         };
@@ -118,7 +119,7 @@ exports.updateCategoryDetail = async (categoryId, body) => {
     });
 
     return {
-        type: "Success",
+        type: statusType.success,
         message: "Update category successfully!",
         statusCode: 200,
         category,
@@ -135,7 +136,7 @@ exports.updateCategoryImage = async (categoryId, imageFile) => {
     // 1. Check image if missed
     if (imageFile === undefined)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "Image required!",
             statusCode: 400,
         };
@@ -145,7 +146,7 @@ exports.updateCategoryImage = async (categoryId, imageFile) => {
     // 2. Check category if not exist
     if (!category)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "No category found!",
             statusCode: 404,
         };
@@ -176,7 +177,7 @@ exports.updateCategoryImage = async (categoryId, imageFile) => {
     );
 
     return {
-        type: "Success",
+        type: statusType.success,
         message: "Update category successfully!",
         statusCode: 200,
         category,
@@ -194,7 +195,7 @@ exports.deleteCategory = async (categoryId) => {
     // 1. Check category if not exist
     if (!category)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "No category found!",
             statusCode: 404,
         };
@@ -206,7 +207,7 @@ exports.deleteCategory = async (categoryId) => {
     await CategorySchema.findByIdAndDelete(categoryId);
 
     return {
-        type: "Success",
+        type: statusType.success,
         message: "Delete category successfully!",
         statusCode: 200,
     };

@@ -2,6 +2,7 @@ const moment = require("moment");
 const DiscountSchema = require("../models/DiscountSchema");
 const UserSchema = require("../models/UserSchema");
 const apiFeatures = require("../utils/apiFeatures");
+const statusType = require("../constants/statusType");
 
 /**
  * @desc    Get all discount codes
@@ -13,13 +14,13 @@ exports.getAllDiscountCodes = async (req) => {
 
     if (!discounts || discounts.length === 0)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "No discount code found!",
             statusCode: 404,
         };
 
     return {
-        type: "Success",
+        type: statusType.success,
         message: "Discount codes found!",
         statusCode: 200,
         discounts,
@@ -36,13 +37,13 @@ exports.getDiscountCode = async (codes) => {
 
     if (!discounts || discounts.length === 0)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "No discount found!",
             statusCode: 404,
         };
 
     return {
-        type: "Success",
+        type: statusType.success,
         message: "Discount found!",
         statusCode: 200,
         discounts,
@@ -58,14 +59,14 @@ exports.getDiscountCode = async (codes) => {
 exports.verifyDiscountCode = async (discountCode, user) => {
     if (!discountCode)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "Missing discount code on url params",
             statusCode: 400,
         };
 
     if (user.discountCodes.includes(discountCode))
         return {
-            type: "Error",
+            type: statusType.error,
             message: "Just 1 code only!",
             statusCode: 400,
         };
@@ -74,7 +75,7 @@ exports.verifyDiscountCode = async (discountCode, user) => {
 
     if (!discount)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "No discount found!",
             statusCode: 404,
         };
@@ -88,7 +89,7 @@ exports.verifyDiscountCode = async (discountCode, user) => {
     });
 
     return {
-        type: "Success",
+        type: statusType.success,
         message: "Success verify discount code!",
         statusCode: 200,
     };
@@ -120,7 +121,7 @@ exports.generateDiscountCode = async (body) => {
         !maxDiscountAmount
     )
         return {
-            type: "Error",
+            type: statusType.error,
             message: "Missing field!",
             statusCode: 400,
         };
@@ -144,7 +145,7 @@ exports.generateDiscountCode = async (body) => {
     });
 
     return {
-        type: "Success",
+        type: statusType.success,
         message: "Create discount code successfully!",
         statusCode: 200,
         discount,
@@ -161,7 +162,7 @@ exports.deleteDiscountCode = async (discountId) => {
 
     if (!success)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "No discount code found!",
             statusCode: 404,
         };
@@ -171,7 +172,7 @@ exports.deleteDiscountCode = async (discountId) => {
     });
 
     return {
-        type: "Success",
+        type: statusType.success,
         message: "Delete discount code successfully!",
         statusCode: 200,
     };
@@ -188,14 +189,14 @@ exports.cancelDiscountCode = async (discountCode, user) => {
 
     if (!discount)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "No discount code found!",
             statusCode: 404,
         };
 
     if (!user.discountCodes.includes(discountCode))
         return {
-            type: "Error",
+            type: statusType.error,
             message: "This discount code not belonging to you!",
             statusCode: 400,
         };
@@ -208,7 +209,7 @@ exports.cancelDiscountCode = async (discountCode, user) => {
     });
 
     return {
-        type: "Success",
+        type: statusType.success,
         message: "Discount code cancelled!",
         statusCode: 200,
     };

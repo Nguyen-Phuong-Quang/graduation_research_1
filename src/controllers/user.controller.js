@@ -1,5 +1,6 @@
 const userService = require("../services/user.service");
 const CustomErrorHandler = require("../utils/CustomErrorHandler");
+const statusType = require("../constants/statusType");
 
 /**
  * @desc      Get User Data Using It's ID Controller
@@ -14,7 +15,7 @@ exports.getUserById = async (req, res, next) => {
         const { type, message, statusCode, user } =
             await userService.getUserById(req.params.id);
 
-        if (type === "Error")
+        if (type === statusType.error)
             return next(new CustomErrorHandler(statusCode, message));
 
         res.status(statusCode).json({
@@ -39,7 +40,7 @@ exports.getUsersByQuery = async (req, res, next) => {
         const { type, message, statusCode, users } =
             await userService.findByQueryUsers(req);
 
-        if (type === "Error")
+        if (type === statusType.error)
             return next(new CustomErrorHandler(statusCode, message));
 
         res.status(200).json({
@@ -67,7 +68,7 @@ exports.createUser = async (req, res, next) => {
         const { type, statusCode, message, user } =
             await userService.createUser(req.body, req.file);
 
-        if (type === "Error")
+        if (type === statusType.error)
             return next(new CustomErrorHandler(statusCode, message));
 
         res.status(statusCode).json({
@@ -94,7 +95,7 @@ exports.updateUserDetail = async (req, res, next) => {
         const { type, message, statusCode, user } =
             await userService.updateUserDetail(req.user._id, req.body);
 
-        if (type === "Error")
+        if (type === statusType.error)
             return next(new CustomErrorHandler(statusCode, message));
 
         res.status(statusCode).json({
@@ -121,7 +122,7 @@ exports.updateUserProfileImage = async (req, res, next) => {
         const { type, message, statusCode, user } =
             await userService.updateUserProfileImage(req.user._id, req.file);
 
-        if (type === "Error")
+        if (type === statusType.error)
             return next(new CustomErrorHandler(statusCode, message));
 
         res.status(statusCode).json({
@@ -148,7 +149,7 @@ exports.deleteUserById = async (req, res, next) => {
             req.params.id
         );
 
-        if (type === "Error")
+        if (type === statusType.error)
             return next(new CustomErrorHandler(statusCode, message));
 
         res.status(statusCode).json({

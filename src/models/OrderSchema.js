@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const orderStatus = require("../constants/oderStatus");
+const statusOrder = require("../constants/statusOrder");
 
 const OrderSchema = new mongoose.Schema(
     {
@@ -60,7 +60,7 @@ const OrderSchema = new mongoose.Schema(
         status: {
             type: String,
             default: "Not processed",
-            enum: orderStatus,
+            enum: statusOrder,
         },
     },
     { timestamps: true }

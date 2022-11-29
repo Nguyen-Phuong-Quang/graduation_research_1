@@ -1,6 +1,6 @@
 const favouriteService = require("../services/favourite.service");
 const CustomErrorHandler = require("../utils/CustomErrorHandler");
-
+const statusType = require("../constants/statusType");
 /**
  * @desc       Add product to favorite list controller
  * @param     { object } req - Request object
@@ -18,7 +18,7 @@ exports.addToFavourite = async (req, res, next) => {
                 req.params.productId
             );
 
-        if (type === "Error")
+        if (type === statusType.error)
             return next(new CustomErrorHandler(statusCode, message));
 
         res.status(statusCode).json({
@@ -47,7 +47,7 @@ exports.deleteProductFromFavourite = async (req, res, next) => {
                 req.params.productId
             );
 
-        if (type === "Error")
+        if (type === statusType.error)
             return next(new CustomErrorHandler(statusCode, message));
 
         res.status(statusCode).json({
@@ -72,7 +72,7 @@ exports.getFavouriteList = async (req, res, next) => {
         const { type, message, statusCode, favourite } =
             await favouriteService.getFavouriteList(req.user._id);
 
-        if (type === "Error")
+        if (type === statusType.error)
             return next(new CustomErrorHandler(statusCode, message));
 
         res.status(statusCode).json({
@@ -102,7 +102,7 @@ exports.checkProductInFavouriteList = async (req, res, next) => {
                 req.params.productId
             );
 
-        if (type === "Error")
+        if (type === statusType.error)
             return next(new CustomErrorHandler(statusCode, message));
 
         res.status(statusCode).json({

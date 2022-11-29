@@ -1,6 +1,6 @@
 const orderService = require("../services/order.service");
 const CustomErrorHandler = require("../utils/CustomErrorHandler");
-
+const statusType = require("../constants/statusType");
 /**
  * @desc      Create New Order Controller
  * @param     { object } req - Request object
@@ -15,7 +15,7 @@ exports.createOrder = async (req, res, next) => {
         const { type, message, statusCode, order } =
             await orderService.createOrder(req.body, req.user);
 
-        if (type === "Error")
+        if (type === statusType.error)
             return next(new CustomErrorHandler(statusCode, message));
 
         res.status(statusCode).json({
@@ -43,7 +43,7 @@ exports.getOrdersByQuery = async (req, res, next) => {
         const { type, message, statusCode, orders } =
             await orderService.getOrdersByQuery(req);
 
-        if (type === "Error")
+        if (type === statusType.error)
             return next(new CustomErrorHandler(statusCode, message));
 
         res.status(statusCode).json({
@@ -69,7 +69,7 @@ exports.getOrderById = async (req, res, next) => {
         const { type, message, statusCode, order } =
             await orderService.getOrderById(req.params.orderId);
 
-        if (type === "Error")
+        if (type === statusType.error)
             return next(new CustomErrorHandler(statusCode, message));
 
         res.status(statusCode).json({
@@ -96,7 +96,7 @@ exports.cancelOrder = async (req, res, next) => {
             req.params.orderId
         );
 
-        if (type === "Error")
+        if (type === statusType.error)
             return next(new CustomErrorHandler(statusCode, message));
 
         res.status(statusCode).json({
@@ -125,7 +125,7 @@ exports.updateOrderStatus = async (req, res, next) => {
                 req.params.orderId
             );
 
-        if (type === "Error")
+        if (type === statusType.error)
             return next(new CustomErrorHandler(statusCode, message));
 
         res.status(statusCode).json({

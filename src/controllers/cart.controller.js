@@ -1,6 +1,6 @@
 const cartService = require("../services/cart.service");
 const CustomErrorHandler = require("../utils/CustomErrorHandler");
-
+const statusType = require("../constants/statusType");
 /**
  * @desc      Add Product To Cart Controller
  * @param     { object } req - Request object
@@ -25,7 +25,7 @@ exports.addItemToCart = async (req, res, next) => {
                 size
             );
 
-        if (type === "Error")
+        if (type === statusType.error)
             return next(new CustomErrorHandler(statusCode, message));
 
         res.status(statusCode).json({
@@ -52,7 +52,7 @@ exports.getCart = async (req, res, next) => {
             req.user.email
         );
 
-        if (type === "Error")
+        if (type === statusType.error)
             return next(new CustomErrorHandler(statusCode, message));
 
         res.status(statusCode).json({
@@ -79,7 +79,7 @@ exports.deleteCart = async (req, res, next) => {
             req.user.email
         );
 
-        if (type === "Error")
+        if (type === statusType.error)
             return next(new CustomErrorHandler(statusCode, message));
 
         res.status(statusCode).json({
@@ -112,7 +112,7 @@ exports.deleteItem = async (req, res, next) => {
                 req.body.size
             );
 
-        if (type === "Error")
+        if (type === statusType.error)
             return next(new CustomErrorHandler(statusCode, message));
 
         res.status(statusCode).json({
@@ -147,7 +147,7 @@ exports.increaseOne = async (req, res, next) => {
                 size
             );
 
-        if (type === "Error")
+        if (type === statusType.error)
             return next(new CustomErrorHandler(statusCode, message));
 
         res.status(statusCode).json({
@@ -182,7 +182,7 @@ exports.decreaseOne = async (req, res, next) => {
                 size
             );
 
-        if (type === "Error")
+        if (type === statusType.error)
             return next(new CustomErrorHandler(statusCode, message));
 
         res.status(statusCode).json({

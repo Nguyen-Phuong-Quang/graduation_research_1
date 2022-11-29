@@ -1,5 +1,6 @@
 const reviewService = require("../services/review.service");
 const CustomErrorHandler = require("../utils/CustomErrorHandler");
+const statusType = require("../constants/statusType");
 
 /**
  * @desc      Create New Review Controller
@@ -20,7 +21,7 @@ exports.addReview = async (req, res, next) => {
                 req.body
             );
 
-        if (type === "Error")
+        if (type === statusType.error)
             return next(new CustomErrorHandler(statusCode, message));
 
         res.status(statusCode).json({
@@ -54,7 +55,7 @@ exports.updateReview = async (req, res, next) => {
                 req.body
             );
 
-        if (type === "Error")
+        if (type === statusType.error)
             return next(new CustomErrorHandler(statusCode, message));
 
         res.status(statusCode).json({
@@ -87,7 +88,7 @@ exports.deleteReview = async (req, res, next) => {
             reviewId
         );
 
-        if (type === "Error")
+        if (type === statusType.error)
             return next(new CustomErrorHandler(statusCode, message));
 
         res.status(statusCode).json({
@@ -116,7 +117,7 @@ exports.getReviewById = async (req, res, next) => {
                 req.params.reviewId
             );
 
-        if (type === "Error")
+        if (type === statusType.error)
             return next(new CustomErrorHandler(statusCode, message));
 
         res.status(statusCode).json({
@@ -143,7 +144,7 @@ exports.getAllReviews = async (req, res, next) => {
         const { type, message, statusCode, reviews } =
             await reviewService.getAllReviews(req);
 
-        if (type === "Error")
+        if (type === statusType.error)
             return next(new CustomErrorHandler(statusCode, message));
 
         res.status(statusCode).json({

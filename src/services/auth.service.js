@@ -11,6 +11,7 @@ const {
 } = require("../utils/cloudinary");
 const tokenTypes = require("../config/token");
 const bcrypt = require("bcrypt");
+const statusType = require("../constants/statusType");
 
 /**
  * @desc    Sign Up Service
@@ -22,7 +23,7 @@ exports.signup = async (body, image) => {
     // 1. Check if profile image not provided
     if (!image)
         return {
-            tpye: "Error",
+            type: statusType.error,
             message: "Profile image required!",
             statusCode: 400,
         };
@@ -37,7 +38,7 @@ exports.signup = async (body, image) => {
     // 2. Check fields
     if (!name || !email || !password || !role)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "Missing fields",
             statusCode: 400,
         };
@@ -47,7 +48,7 @@ exports.signup = async (body, image) => {
 
     if (isExistedEmail)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "Email is existed!",
             statusCode: 409,
         };
@@ -56,7 +57,7 @@ exports.signup = async (body, image) => {
     if (role === "ADMIN") {
         if (body.adminKey !== "SECRET_ADMIN_KEY")
             return {
-                type: "Error",
+                type: statusType.error,
                 message: "Cannot create admin!",
                 statusCode: 400,
             };
@@ -90,7 +91,7 @@ exports.signup = async (body, image) => {
     user.password = "";
 
     return {
-        type: "Success",
+        type: statusType.success,
         statusCode: 201,
         message: "Sign up successfully!",
         user,
@@ -110,7 +111,7 @@ exports.verifyEmail = async (verifyCode, email) => {
     // 2. If no code exist in db (can have many codes because user can request to resend verify code)
     if (users.length === 0)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "Code is expired!",
             statusCode: 404,
         };
@@ -121,7 +122,7 @@ exports.verifyEmail = async (verifyCode, email) => {
     // 5. If code is not correct
     if (!user)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "Incorrect code!",
             statusCode: 400,
         };
@@ -149,7 +150,7 @@ exports.verifyEmail = async (verifyCode, email) => {
     await CodeSchema.deleteMany({ email });
 
     return {
-        type: "Success",
+        type: statusType.success,
         message: "Verify email successfully!",
         statusCode: 201,
     };
@@ -165,7 +166,7 @@ exports.signin = async (email, password) => {
     // 1. Check email or password is not inputted
     if (!email || !password)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "Email and password required!",
             statusCode: 400,
         };
@@ -176,7 +177,7 @@ exports.signin = async (email, password) => {
     // If not
     if (!user)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "Email not found!",
             statusCode: 404,
         };
@@ -190,7 +191,7 @@ exports.signin = async (email, password) => {
     // If not
     if (!isMatchPassword)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "Password is wrong!",
             statusCode: 400,
         };
@@ -199,7 +200,7 @@ exports.signin = async (email, password) => {
     const token = await generateAuthToken(user);
 
     return {
-        type: "Success",
+        type: statusType.success,
         message: "Sign in successfully!",
         statusCode: 200,
         token,
@@ -218,7 +219,7 @@ exports.refreshToken = async (refreshToken) => {
     // 2. If expired
     if (!refreshTokenDoc)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "User token not found!",
             statusCode: 404,
         };
@@ -229,7 +230,7 @@ exports.refreshToken = async (refreshToken) => {
     // If no user found
     if (!user)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "User not found!",
             statusCode: 404,
         };
@@ -242,7 +243,7 @@ exports.refreshToken = async (refreshToken) => {
     ) {
         await TokenSchema.deleteMany({ token: refreshToken });
         return {
-            type: "Error",
+            type: statusType.error,
             message: "This refresh token is expired!",
             statusCode: 406,
         };
@@ -254,7 +255,7 @@ exports.refreshToken = async (refreshToken) => {
     const newTokens = await generateAuthToken(user);
 
     return {
-        type: "Success",
+        type: statusType.success,
         message: "Refresh token successfully!",
         statusCode: 200,
         newTokens,
@@ -273,7 +274,7 @@ exports.forgetPassword = async (email) => {
     // if not
     if (!user) {
         return {
-            type: "Error",
+            type: statusType.error,
             message: "No user found",
             statusCode: 404,
         };
@@ -286,7 +287,7 @@ exports.forgetPassword = async (email) => {
     });
 
     return {
-        type: "Success",
+        type: statusType.success,
         message: "Please check reset password code in email!",
         statusCode: 200,
     };
@@ -307,7 +308,7 @@ exports.resetPassword = async (resetCode, email, password, confirmPassword) => {
     // if no code found
     if (resetUserDoc.length < 1)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "Expired reset process!",
             statusCode: 400,
         };
@@ -315,7 +316,7 @@ exports.resetPassword = async (resetCode, email, password, confirmPassword) => {
     // 2. Check password matchs confirm password or not
     if (password !== confirmPassword)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "Password does not match!",
             statusCode: 400,
         };
@@ -326,7 +327,7 @@ exports.resetPassword = async (resetCode, email, password, confirmPassword) => {
     // If not
     if (!check)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "Wrong code!",
             statusCode: 400,
         };
@@ -336,7 +337,7 @@ exports.resetPassword = async (resetCode, email, password, confirmPassword) => {
 
     if (!user)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "No user found!",
             statusCode: 404,
         };
@@ -344,7 +345,7 @@ exports.resetPassword = async (resetCode, email, password, confirmPassword) => {
     // 5. Check password is math old password
     if (bcrypt.compareSync(password, user.password))
         return {
-            type: "Error",
+            type: statusType.error,
             message: "Password must not be the same as the old password",
             statusCode: 400,
         };
@@ -359,7 +360,7 @@ exports.resetPassword = async (resetCode, email, password, confirmPassword) => {
     await CodeSchema.deleteMany({ email });
 
     return {
-        type: "Success",
+        type: statusType.success,
         message: "Reset password successfully!",
         statusCode: 200,
     };
@@ -382,7 +383,7 @@ exports.changePassword = async (
     // 1. Check new password is match confirm password or not
     if (newPassword !== confirmPassword)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "Password is not match!",
             statusCode: 400,
         };
@@ -390,7 +391,7 @@ exports.changePassword = async (
     // 2. Check new password is match current password or not
     if (password === newPassword)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "Password and new password must not be same!",
             statusCode: 400,
         };
@@ -404,7 +405,7 @@ exports.changePassword = async (
     // If not
     if (!isMatch)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "Current password is not match!",
             statusCode: 400,
         };
@@ -419,7 +420,7 @@ exports.changePassword = async (
     await TokenSchema.deleteMany({ userId: userId });
 
     return {
-        type: "Success",
+        type: statusType.success,
         message: "Change password successfully!",
         statusCode: 200,
     };
@@ -437,13 +438,13 @@ exports.signout = async (userId) => {
     // 2. Check if no token found
     if (deleleResponse.deletedCount === 0)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "Please login again!",
             statusCode: 400,
         };
 
     return {
-        type: "Success",
+        type: statusType.success,
         message: "Sign out successfully!",
         statusCode: 200,
     };

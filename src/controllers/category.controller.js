@@ -1,6 +1,6 @@
 const categoryService = require("../services/category.service");
 const CustomErrorHandler = require("../utils/CustomErrorHandler");
-
+const statusType = require("../constants/statusType");
 /**
  * @desc      Create New Category Controller
  * @param     { object } req - Request object
@@ -20,7 +20,7 @@ exports.addCategory = async (req, res, next) => {
                 req.file
             );
 
-        if (type === "Error")
+        if (type === statusType.error)
             return next(new CustomErrorHandler(statusCode, message));
 
         res.status(statusCode).json({
@@ -46,7 +46,7 @@ exports.getCategoryById = async (req, res, next) => {
         const { type, message, statusCode, category } =
             await categoryService.getCategoryById(req.params.categoryId);
 
-        if (type === "Error")
+        if (type === statusType.error)
             return next(new CustomErrorHandler(statusCode, message));
 
         res.status(statusCode).json({
@@ -74,7 +74,7 @@ exports.getCategories = async (req, res, next) => {
         const { type, message, statusCode, categories } =
             await categoryService.getCategoriesByQuery(req);
 
-        if (type === "Error")
+        if (type === statusType.error)
             return next(new CustomErrorHandler(statusCode, message));
 
         res.status(statusCode).json({
@@ -104,7 +104,7 @@ exports.updateCategoryDetail = async (req, res, next) => {
                 req.body
             );
 
-        if (type === "Error")
+        if (type === statusType.error)
             return next(new CustomErrorHandler(statusCode, message));
 
         res.status(statusCode).json({
@@ -134,7 +134,7 @@ exports.updateCategoryImage = async (req, res, next) => {
                 req.file
             );
 
-        if (type === "Error")
+        if (type === statusType.error)
             return next(new CustomErrorHandler(statusCode, message));
 
         res.status(statusCode).json({
@@ -160,7 +160,7 @@ exports.deleteCategory = async (req, res, next) => {
         const { type, message, statusCode } =
             await categoryService.deleteCategory(req.params.categoryId);
 
-        if (type === "Error")
+        if (type === statusType.error)
             return next(new CustomErrorHandler(statusCode, message));
 
         res.status(statusCode).json({

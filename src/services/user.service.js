@@ -5,13 +5,14 @@ const {
     uploadFileCloudinary,
     destroyFileCloudinary,
 } = require("../utils/cloudinary");
+const statusType = require("../constants/statusType");
 
 exports.getUserById = async (id) => {
     const user = await UserSchema.findById(id);
 
     if (!user)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "No user found!",
             statusCode: 404,
         };
@@ -19,7 +20,7 @@ exports.getUserById = async (id) => {
     user.password = undefined;
 
     return {
-        type: "Success",
+        type: statusType.success,
         message: "Found!",
         statusCode: 200,
         user,
@@ -32,13 +33,13 @@ exports.findByQueryUsers = async (req) => {
     // If no user found
     if (users.length < 1)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "No user found!",
             statusCode: 404,
         };
 
     return {
-        type: "Success",
+        type: statusType.success,
         message: "Found!",
         statusCode: 200,
         users,
@@ -52,7 +53,7 @@ exports.createUser = async (body, image) => {
     // Check image required
     if (!image)
         return {
-            tpye: "Error",
+            type: statusType.error,
             message: "Profile image required!",
             statusCode: 400,
         };
@@ -64,7 +65,7 @@ exports.createUser = async (body, image) => {
 
     if (!name || !email || !password || !role)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "Missing fields",
             statusCode: 400,
         };
@@ -74,7 +75,7 @@ exports.createUser = async (body, image) => {
 
     if (isExistedEmail)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "Email is existed!",
             statusCode: 409,
         };
@@ -105,7 +106,7 @@ exports.createUser = async (body, image) => {
     newUser.password = "";
 
     return {
-        type: "Success",
+        type: statusType.success,
         statusCode: 201,
         message: "Sign up successfully!",
         user: newUser,
@@ -119,7 +120,7 @@ exports.updateUserDetail = async (userId, body) => {
         const isExistedEmail = await UserSchema.isExistedEmail(email);
         if (isExistedEmail)
             return {
-                type: "Error",
+                type: statusType.error,
                 message: "Email is existed!",
                 statusCode: 409,
             };
@@ -131,7 +132,7 @@ exports.updateUserDetail = async (userId, body) => {
     });
 
     return {
-        type: "Success",
+        type: statusType.success,
         message: "Update user detail successfully",
         statusCode: 200,
         user,
@@ -143,7 +144,7 @@ exports.updateUserProfileImage = async (userId, newImage) => {
 
     if (!user)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "No user found!",
             statusCode: 404,
         };
@@ -165,7 +166,7 @@ exports.updateUserProfileImage = async (userId, newImage) => {
     await user.save();
 
     return {
-        type: "Success",
+        type: statusType.success,
         message: "Update profile image successfully!",
         statusCode: 200,
         user,
@@ -177,7 +178,7 @@ exports.deleteUserById = async (userId) => {
 
     if (!user)
         return {
-            type: "Error",
+            type: statusType.error,
             message: "No user found!",
             statusCode: 404,
         };
@@ -185,7 +186,7 @@ exports.deleteUserById = async (userId) => {
     await destroyFileCloudinary(user.profileImageId);
 
     return {
-        type: "Success",
+        type: statusType.success,
         message: "Delete user successfully",
         statusCode: 200,
     };
