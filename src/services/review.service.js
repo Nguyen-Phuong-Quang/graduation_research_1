@@ -3,6 +3,13 @@ const ReviewSchema = require("../models/ReviewSchema");
 const apiFeature = require("../utils/apiFeatures");
 const statusType = require("../constants/statusType");
 
+/**
+ * @desc    Create New Review
+ * @param   { String } productId - Product ID
+ * @param   { object } userId - An object contains logged in user data
+ * @param   { object } body - Body object data
+ * @returns { object<type|message|statusCode|review> }
+ */
 exports.addReview = async (productId, userId, body) => {
     const product = await ProductSchema.findById(productId);
 
@@ -61,6 +68,14 @@ exports.addReview = async (productId, userId, body) => {
     };
 };
 
+/**
+ * @desc    Update Review Using It's ID
+ * @param   { String } userId - userId
+ * @param   { String } prodcuctId - Product ID
+ * @param   { String } reviewId - Review ID
+ * @param   { object } body - Body object data
+ * @returns { object<type|message|statusCode|review> }
+ */
 exports.updateReview = async (userId, productId, reviewId, body) => {
     const review = await ReviewSchema.findOne({
         _id: reviewId,
@@ -108,6 +123,13 @@ exports.updateReview = async (userId, productId, reviewId, body) => {
     };
 };
 
+/**
+ * @desc    Delete Review Using It's ID
+ * @param   { String } userId - User ID
+ * @param   { String } productId - Product ID
+ * @param   { String } reviewId - Review ID
+ * @returns { object<type|message|statusCode> }
+ */
 exports.deleteReview = async (userId, productId, reviewId) => {
     const review = await ReviewSchema.findOne({
         _id: reviewId,
@@ -138,6 +160,12 @@ exports.deleteReview = async (userId, productId, reviewId) => {
     };
 };
 
+/**
+ * @desc    Get Review Using It's ID
+ * @param   { String } productId - Product ID
+ * @param   { String } reviewId - Review ID
+ * @returns { object<type|message|statusCode|review> }
+ */
 exports.getReviewById = async (productId, reviewId) => {
     const review = await ReviewSchema.findOne({
         _id: reviewId,
@@ -159,6 +187,11 @@ exports.getReviewById = async (productId, reviewId) => {
     };
 };
 
+/**
+ * @desc    Get All Reviews By Query
+ * @param   { object } req - Request object
+ * @returns { object<type|message|statusCode|reviews> }
+ */
 exports.getAllReviews = async (req) => {
     const product = await ProductSchema.findById(req.params.productId);
 

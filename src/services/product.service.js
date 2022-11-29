@@ -8,6 +8,11 @@ const {
 const apiFeatures = require("../utils/apiFeatures");
 const statusType = require("../constants/statusType");
 
+/**
+ * @desc    Query Product Using It's ID
+ * @param   { String } productId - Product ID
+ * @returns { Object<type|message|statusCode|product> }
+ */
 exports.getProductById = async (productId) => {
     const product = await ProductSchema.findById(productId).lean();
 
@@ -26,6 +31,11 @@ exports.getProductById = async (productId) => {
     };
 };
 
+/**
+ * @desc    Get products by query
+ * @param   { Object } req - Request object
+ * @returns { Object<type|message|statusCode|products> }
+ */
 exports.getAllProductsByQuery = async (req) => {
     const { limit, min, max } = req.query;
 
@@ -55,7 +65,14 @@ exports.getAllProductsByQuery = async (req) => {
     };
 };
 
-exports.createProduct = async (body, files, seller) => {
+/**
+ * @desc    Create new product
+ * @param   { Object } body - Body object data
+ * @param   { Object } files - Product images
+ * @param   { String } seller - Product seller ID
+ * @returns { Object<type|message|statusCode|product> }
+ */
+exports.createProduct = async (body, files, sellerId) => {
     const {
         name,
         category,
@@ -119,7 +136,7 @@ exports.createProduct = async (body, files, seller) => {
         isOutOfStock,
         images: imagesSecureUrl,
         imagesId: imagesPublicId,
-        seller,
+        seller: sellerId,
         mainImage: mainImageResult.secure_url,
         mainImageId: mainImageResult.public_id,
     });
@@ -179,6 +196,13 @@ exports.createProduct = async (body, files, seller) => {
     };
 };
 
+/**
+ * @desc    Update Product Details
+ * @param   { String } productId - Product ID
+ * @param   { String } sellerIdId - Seller ID
+ * @param   { Object } body - Body object data
+ * @returns { Object<type|message|statusCode|product> }
+ */
 exports.updateProductDetail = async (productId, sellerId, body) => {
     const product = await ProductSchema.findById(productId);
 
@@ -209,6 +233,13 @@ exports.updateProductDetail = async (productId, sellerId, body) => {
     };
 };
 
+/**
+ * @desc    Update Product Images
+ * @param   { String } productId - Product ID
+ * @param   { String } sellerId - Seller ID
+ * @param   { Object } images - Product images
+ * @returns { Object<type|message|statusCode> }
+ */
 exports.updateProductImages = async (productId, sellerId, images) => {
     if (images.length === 0)
         return {
@@ -331,6 +362,13 @@ exports.deleteProductById = async (productId, sellerId) => {
     };
 };
 
+/**
+ * @desc    Update Product Color
+ * @param   { String } productId - Product ID
+ * @param   { String } sellerId - Seller ID
+ * @param   { String } color - Product color
+ * @returns { Object<type|message|statusCode|color> }
+ */
 exports.addColor = async (productId, seller, color) => {
     const product = await ProductSchema.findById(productId);
 
@@ -369,7 +407,14 @@ exports.addColor = async (productId, seller, color) => {
     };
 };
 
-exports.deleteColor = async (productId, seller, color) => {
+/**
+ * @desc    Delete Product Color
+ * @param   { String } productId - Product ID
+ * @param   { String } sellerId - Seller ID
+ * @param   { String } color - Product color
+ * @returns { Object<type|message|statusCode> }
+ */
+exports.deleteColor = async (productId, sellerId, color) => {
     const product = await ProductSchema.findById(productId);
 
     if (!product)
@@ -379,7 +424,7 @@ exports.deleteColor = async (productId, seller, color) => {
             statusCode: 404,
         };
 
-    if (seller.toString() !== product.seller.toString())
+    if (sellerId.toString() !== product.seller.toString())
         return {
             type: statusType.error,
             message: "This is not your product!",
@@ -409,6 +454,13 @@ exports.deleteColor = async (productId, seller, color) => {
     };
 };
 
+/**
+ * @desc    Update Product Size
+ * @param   { String } productId - Product ID
+ * @param   { String } sellerId - Seller ID
+ * @param   { String } size - Product size
+ * @returns { Object<type|message|statusCode|size> }
+ */
 exports.addSize = async (productId, seller, size) => {
     const product = await ProductSchema.findById(productId);
 
@@ -447,7 +499,14 @@ exports.addSize = async (productId, seller, size) => {
     };
 };
 
-exports.deleteSize = async (productId, seller, size) => {
+/**
+ * @desc    Delete Product Size
+ * @param   { String } productId - Product ID
+ * @param   { String } sellerId - Seller ID
+ * @param   { String } size - Product size
+ * @returns { Object<type|message|statusCode> }
+ */
+exports.deleteSize = async (productId, sellerId, size) => {
     const product = await ProductSchema.findById(productId);
 
     if (!product)
@@ -457,7 +516,7 @@ exports.deleteSize = async (productId, seller, size) => {
             statusCode: 404,
         };
 
-    if (seller.toString() !== product.seller.toString())
+    if (sellerId.toString() !== product.seller.toString())
         return {
             type: statusType.error,
             message: "This is not your product!",

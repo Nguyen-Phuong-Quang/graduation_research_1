@@ -7,6 +7,11 @@ const {
 } = require("../utils/cloudinary");
 const statusType = require("../constants/statusType");
 
+/**
+ * @desc    Get User Using It's ID
+ * @param   { object } id - User ID
+ * @return  { object<type|message|statusCode|user> }
+ */
 exports.getUserById = async (id) => {
     const user = await UserSchema.findById(id);
 
@@ -27,6 +32,11 @@ exports.getUserById = async (id) => {
     };
 };
 
+/**
+ * @desc    Query Users
+ * @param   { object } req - Request object
+ * @returns { object<type|message|statusCode|users> }
+ */
 exports.findByQueryUsers = async (req) => {
     const users = await apiFeatures(req, UserSchema);
 
@@ -46,6 +56,12 @@ exports.findByQueryUsers = async (req) => {
     };
 };
 
+/**
+ * @docs    Create New User
+ * @param   { object } body - Body object data
+ * @param   { object } image - User profile image
+ * @returns { object<type|message|statusCode|user> }
+ */
 exports.createUser = async (body, image) => {
     const { name, email, password, role } = body;
     let { address, companyName, phone } = body;
@@ -113,6 +129,12 @@ exports.createUser = async (body, image) => {
     };
 };
 
+/**
+ * @desc    Update User Details Using It's ID
+ * @param   { object } userId - User ID
+ * @param   { object } body - Body object data
+ * @returns { object<type|message|statusCode|user> }
+ */
 exports.updateUserDetail = async (userId, body) => {
     const { email } = body;
 
@@ -139,6 +161,12 @@ exports.updateUserDetail = async (userId, body) => {
     };
 };
 
+/**
+ * @desc    Update User Profile Image Using It's ID
+ * @param   { object } userId - User ID
+ * @param   { object } newImage - Updated Profile Image
+ * @returns { object<type|message|statusCode|user> }
+ */
 exports.updateUserProfileImage = async (userId, newImage) => {
     const user = await UserSchema.findById(userId).select("-password");
 
@@ -173,6 +201,11 @@ exports.updateUserProfileImage = async (userId, newImage) => {
     };
 };
 
+/**
+ * @desc    Delete User Using It's ID
+ * @param   { String } userId - User ID,
+ * @returns { object<type|message|statusCode> }
+ */
 exports.deleteUserById = async (userId) => {
     const user = await UserSchema.findByIdAndDelete(userId);
 
