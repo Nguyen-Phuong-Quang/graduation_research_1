@@ -440,7 +440,7 @@ exports.deleteColor = async (productId, sellerId, color) => {
         };
 
     product.colors = product.colors.filter(
-        (colorId) => colorId.toString() !== colorDoc._id.toString()
+        (color) => color._id.toString() !== colorDoc._id.toString()
     );
 
     await ColorSchema.updateOne({ color }, { $pull: { product: product._id } });
@@ -532,7 +532,7 @@ exports.deleteSize = async (productId, sellerId, size) => {
         };
 
     product.sizes = product.sizes.filter(
-        (sizeId) => sizeId.toString() !== sizeDoc._id.toString()
+        (size) => size._id.toString() !== sizeDoc._id.toString()
     );
 
     await SizeSchema.updateOne({ size }, { $pull: { product: product._id } });
