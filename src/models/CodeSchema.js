@@ -32,10 +32,9 @@ const CodeSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        enum: ['ADMIN', 'SELLER', 'USER'],
-        default: 'USER'
+        enum: ['ADMIN', 'SELLER', 'USCUSTOMERER'],
+        default: 'CUSTOMER'
     },
-    passwordChangeAt: Date,
     address: String,
     companyName: String,
     phone: String,

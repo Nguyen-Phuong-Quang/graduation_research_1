@@ -78,10 +78,8 @@ exports.signin = async (req, res, next) => {
 
     try {
         // Call sign in service
-        const { type, statusCode, message, token } = await authService.signin(
-            email,
-            password
-        );
+        const { type, statusCode, message, user, tokens } =
+            await authService.signin(email, password);
 
         if (type === statusType.error)
             return next(new CustomErrorHandler(statusCode, message));
@@ -89,7 +87,8 @@ exports.signin = async (req, res, next) => {
         res.status(statusCode).json({
             type,
             message,
-            token,
+            user,
+            tokens,
         });
     } catch (err) {
         next(err);

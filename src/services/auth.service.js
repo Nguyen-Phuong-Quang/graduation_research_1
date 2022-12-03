@@ -160,7 +160,7 @@ exports.verifyEmail = async (verifyCode, email) => {
  * @desc    Sign In Service
  * @param   { String } email - User email address
  * @param   { String } password - User password
- * @return  { object<type|statusCode|message|tokens> }
+ * @return  { object<type|statusCode|message|user|tokens> }
  */
 exports.signin = async (email, password) => {
     // 1. Check email or password is not inputted
@@ -197,13 +197,17 @@ exports.signin = async (email, password) => {
         };
 
     // 5. Generate token
-    const token = await generateAuthToken(user);
+    const tokens = await generateAuthToken(user);
 
+    // 6. Set user fassword undifined to return data
+    user.password = undefined;
+    
     return {
         type: statusType.success,
         message: "Sign in successfully!",
         statusCode: 200,
-        token,
+        user,
+        tokens,
     };
 };
 
