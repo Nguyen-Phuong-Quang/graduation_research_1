@@ -2,6 +2,13 @@ const productService = require("../services/product.service");
 const CustomErrorHandler = require("../utils/CustomErrorHandler");
 const statusType = require("../constants/statusType");
 
+/**
+ * @desc      Get Product By product Id
+ * @param     { object } req - Request object
+ * @param     { object } res - Response object
+ * @param     { function } next - Next callback funtion
+ * @returns   { JSON } - A JSON object representing the type, message and the products
+ */
 exports.getProductById = async (req, res, next) => {
     try {
         const { type, message, statusCode, product } =
@@ -31,6 +38,24 @@ exports.getAllProducts = async (req, res, next) => {
     try {
         const { type, message, statusCode, products } =
             await productService.getAllProductsByQuery(req);
+
+        if (type === statusType.error)
+            return next(new CustomErrorHandler(statusCode, message));
+
+        res.status(statusCode).json({
+            type,
+            message,
+            products,
+        });
+    } catch (err) {
+        next(err);
+    }
+};
+
+exports.getSellerProducts = async (req, res, next) => {
+    try {
+        const { type, message, statusCode, products } =
+            await productService.getSellerProducts(req, req.user._id);
 
         if (type === statusType.error)
             return next(new CustomErrorHandler(statusCode, message));

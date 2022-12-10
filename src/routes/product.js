@@ -8,6 +8,14 @@ const router = express.Router();
 // Get product statistic
 router.get("/product-static", productController.getProductStatics);
 
+// Get seller product
+router.get(
+    "/seller-product",
+    authorize,
+    restrictedTo("ADMIN", "SELLER"),
+    productController.getSellerProducts
+);
+
 // Get product by id
 router.get("/:productId", productController.getProductById);
 

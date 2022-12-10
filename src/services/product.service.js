@@ -65,6 +65,28 @@ exports.getAllProductsByQuery = async (req) => {
     };
 };
 
+exports.getSellerProducts = async (req, userId) => {
+    if (!req.query.limit) req.query.limit = 20;
+
+    req.query.seller = userId;
+
+    const products = await apiFeatures(req, ProductSchema);
+
+    if (products.length < 1)
+        return {
+            type: statusType.error,
+            message: "No product found!",
+            statusCode: 404,
+        };
+
+    return {
+        type: statusType.success,
+        message: "Found!",
+        statusCode: 200,
+        products,
+    };
+};
+
 /**
  * @desc    Create new product
  * @param   { Object } body - Body object data

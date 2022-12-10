@@ -92,6 +92,7 @@ const ProductSchema = new mongoose.Schema(
 );
 
 ProductSchema.index({ name: 1 }, { unique: true });
+ProductSchema.index({ seller: 1 });
 ProductSchema.index({ slug: 1, price: 1, averageRating: -1 });
 
 // Run before .save() and .create()
@@ -100,7 +101,7 @@ ProductSchema.pre("save", function (next) {
     next();
 });
 
-//  Use mongoose populate 
+//  Use mongoose populate
 ProductSchema.pre(/^find/, function (next) {
     this.populate([
         { path: "colors", select: "color" },

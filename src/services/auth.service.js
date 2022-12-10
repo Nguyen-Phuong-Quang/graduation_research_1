@@ -201,7 +201,7 @@ exports.signin = async (email, password) => {
 
     // 6. Set user fassword undifined to return data
     user.password = undefined;
-    
+
     return {
         type: statusType.success,
         message: "Sign in successfully!",
@@ -218,10 +218,10 @@ exports.signin = async (email, password) => {
  */
 exports.refreshToken = async (refreshToken) => {
     // 1. Check token is expired or not
-    const refreshTokenDoc = await verifyToken(refreshToken, tokenTypes.refresh);
+    const refreshTokenDoc = await verifyToken(refreshToken);
 
     // 2. If expired
-    if (!refreshTokenDoc)
+    if (refreshTokenDoc.type === statusType.error)
         return {
             type: statusType.error,
             message: "User token not found!",
@@ -229,7 +229,9 @@ exports.refreshToken = async (refreshToken) => {
         };
 
     // 3. Find user of token
-    const user = await UserSchema.findById(refreshTokenDoc.userId);
+    const user = await UserSchema.findById(
+        refreshTokenDoc.tokenResponse.userId
+    );
 
     // If no user found
     if (!user)

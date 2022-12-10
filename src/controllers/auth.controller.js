@@ -116,7 +116,7 @@ exports.refreshToken = async (req, res, next) => {
         res.status(statusCode).json({
             type,
             message,
-            token: newTokens,
+            tokens: newTokens,
         });
     } catch (err) {
         next(err);
