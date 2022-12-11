@@ -51,11 +51,11 @@ const UserSchema = new mongoose.Schema(
         phone: String,
         profileImage: {
             type: String,
-            // required: true
+            required: true
         },
         profileImageId: {
             type: String,
-            // required: true
+            required: true
         },
         discountCodes: [
             {
@@ -73,7 +73,6 @@ UserSchema.index({ name: 1, email: 1 }, { unique: true });
 // Encrypt password using bcrypt
 UserSchema.pre("save", async function (next) {
     if (!this.isModified("password")) return next();
-
     const salt = bcrypt.genSaltSync(10);
     this.password = bcrypt.hashSync(this.password, salt);
     next();
@@ -101,10 +100,8 @@ UserSchema.methods.isMatchPassword = function (password) {
 UserSchema.methods.isChangePasswordAfter = function (JWTTimestamp) {
     if (this.passwordChangeAt) {
         const changedTime = moment(this.passwordChangeAt).unix();
-
         return JWTTimestamp < changedTime;
     }
-
     return false;
 };
 

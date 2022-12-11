@@ -77,7 +77,7 @@ exports.getCategoryById = async (categoryId) => {
  * @returns { object<type|message|statusCode|categories> }
  */
 exports.getCategoriesByQuery = async (req) => {
-    const categories = await apiFeatures(req, CategorySchema);
+    const categories = await apiFeatures(req, CategorySchema, populate);
 
     // Checck if no category found
     if (!categories || categories.length === 0)

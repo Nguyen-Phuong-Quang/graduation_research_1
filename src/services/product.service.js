@@ -70,7 +70,9 @@ exports.getSellerProducts = async (req, userId) => {
 
     req.query.seller = userId;
 
-    const products = await apiFeatures(req, ProductSchema);
+    const populate = [{ path: "category", select: "name" }];
+
+    const products = await apiFeatures(req, ProductSchema, populate);
 
     if (products.length < 1)
         return {

@@ -1,6 +1,6 @@
 const CustomErrorHandler = require("./CustomErrorHandler");
 
-const apiFeatures = async (req, Model, populate) => {
+const apiFeatures = async (req, Model, populate = []) => {
     let query;
 
     // Copy req.query

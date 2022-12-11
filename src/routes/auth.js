@@ -29,6 +29,6 @@ router.use(authorize);
 //Change password
 router.post("/change-password", authController.changePassword);
 
-router.post("/signout", authController.signout);
+router.post("/sign-out", authController.signout);
 
 module.exports = router;
