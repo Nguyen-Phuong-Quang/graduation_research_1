@@ -47,16 +47,17 @@ const CodeSchema = new mongoose.Schema(
         phone: String,
         profileImage: {
             type: String,
-            required: true
+            required: true,
         },
         profileImageId: {
             type: String,
-            required: true
+            required: true,
         },
         code: { type: String },
         type: {
             type: String,
             enum: [tokenTypes.resetPassword, tokenTypes.verifyEmail],
+            required: true,
         },
     },
     {
@@ -64,6 +65,8 @@ const CodeSchema = new mongoose.Schema(
         expireAfterSeconds: config.jwt.jwt_verify_email_expiration_minutes * 60,
     }
 );
+
+CodeSchema.index({ email: 1 });
 
 // Generate verify code and send to email register
 CodeSchema.pre("save", async function (next) {
